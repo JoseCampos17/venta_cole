@@ -7,7 +7,7 @@ const requiredEnv = (key: string): string => {
 };
 
 export const env = {
-  dataProvider: (process.env.DATA_PROVIDER ?? 'json') as 'json' | 'supabase',
+  dataProvider: (process.env.DATA_PROVIDER ?? 'supabase') as 'json' | 'supabase',
   adminPasswordHash: process.env.ADMIN_PASSWORD_HASH ?? '',
   superAdminPasswordHash: process.env.SUPER_ADMIN_PASSWORD_HASH ?? '',
   jwtSecret: process.env.JWT_SECRET ?? 'dev-secret-change-in-production',

@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 async function seedSupabase() {
-  const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:6652278Jogf@db.ogduluwvhezpvwimffdi.supabase.co:5432/postgres';
+  const connectionString = process.env.DATABASE_URL;
   const client = new Client({
     connectionString,
     ssl: { rejectUnauthorized: false },

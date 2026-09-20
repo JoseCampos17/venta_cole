@@ -28,9 +28,11 @@ export default function AdminDashboardPage() {
   const [chartData, setChartData] = useState<SalesChartPoint[]>([]);
   const [pendingOrders, setPendingOrders] = useState<OrderWithItems[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   const loadDashboard = React.useCallback(async (isInitial = false) => {
     if (isInitial) setIsLoading(true);
+    setHasError(false);
     try {
       const [dashRes, ordersRes] = await Promise.all([
         fetch('/api/dashboard?period=month'),
@@ -44,9 +46,12 @@ export default function AdminDashboardPage() {
         setTopProducts(dashData.topProducts);
         setChartData(dashData.chart);
         setPendingOrders(ordersData);
+      } else {
+        if (isInitial) setHasError(true);
       }
     } catch (e) {
       console.error(e);
+      if (isInitial) setHasError(true);
     } finally {
       if (isInitial) setIsLoading(false);
     }
@@ -112,7 +117,28 @@ export default function AdminDashboardPage() {
     }
   };
 
-  if (isLoading || !stats) {
+  if (isLoading && !stats) {
+    return <LoadingState message="Cargando resumen..." />;
+  }
+
+  if (hasError && !stats) {
+    return (
+      <div className="max-w-md mx-auto py-12 text-center space-y-4">
+        <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <h2 className="text-lg font-bold text-slate-800">No se pudo cargar el resumen</h2>
+        <p className="text-xs text-slate-500">
+          Ocurrió un problema conectando con la base de datos.
+        </p>
+        <Button variant="primary" size="sm" onClick={() => loadDashboard(true)}>
+          Reintentar
+        </Button>
+      </div>
+    );
+  }
+
+  if (!stats) {
     return <LoadingState message="Cargando resumen..." />;
   }
 

@@ -3,12 +3,11 @@ import { createClient } from '@supabase/supabase-js';
 import { generateId } from '@/lib/utils/id-generator';
 import path from 'path';
 
-// Use service role key server-side for storage uploads (bypasses RLS)
-function getAdminClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  return createClient(url, key, { auth: { persistSession: false } });
-}
+// JWT service role key - required for Supabase Storage (new sb_secret format doesn't work for storage)
+const STORAGE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nZHVsdXd2aGV6cHZ3aW1mZmRpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTg2MjQ3NCwiZXhwIjoyMTA1NDM4NDc0fQ.wurSk3a18i8k0TE61ZNu6kkuZU4TVtb7tFIUds8ZV_g';
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://ogduluwvhezpvwimffdi.supabase.co';
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,7 +27,11 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const supabase = getAdminClient();
+    // Use JWT service role key for storage (required for bucket operations)
+    const supabase = createClient(SUPABASE_URL, STORAGE_SERVICE_KEY, {
+      auth: { persistSession: false },
+    });
+
     const { error } = await supabase.storage
       .from('products')
       .upload(filename, buffer, {

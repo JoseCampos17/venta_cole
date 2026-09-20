@@ -4,6 +4,10 @@ import path from 'path';
 
 async function testConnection() {
   const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    console.log('⚠️ DATABASE_URL no está definida en las variables de entorno.');
+    return;
+  }
   console.log('Connecting to Supabase PostgreSQL at:', connectionString.replace(/:[^:@]+@/, ':****@'));
 
   const client = new Client({

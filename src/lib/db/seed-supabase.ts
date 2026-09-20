@@ -4,6 +4,10 @@ import path from 'path';
 
 async function seedSupabase() {
   const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    console.error('⚠️ DATABASE_URL no está configurada.');
+    return;
+  }
   const client = new Client({
     connectionString,
     ssl: { rejectUnauthorized: false },

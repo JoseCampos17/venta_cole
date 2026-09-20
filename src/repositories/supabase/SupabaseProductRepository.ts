@@ -1,222 +1,144 @@
 import { IProductRepository } from '../interfaces/IProductRepository';
 import { Product, CreateProductInput, UpdateProductInput, ProductFilters } from '@/types/product';
-import { query } from '@/lib/db/supabase/db';
+import { supabase } from '@/lib/db/supabase/client';
 import { generateId } from '@/lib/utils/id-generator';
 
-const toIso = (d: any): string => (d instanceof Date ? d.toISOString() : String(d || ''));
-
 const mapProduct = (row: any): Product => ({
-  ...row,
-  createdAt: toIso(row.createdAt),
-  updatedAt: toIso(row.updatedAt),
+  id: row.id,
+  name: row.name,
+  description: row.description,
+  categoryId: row.category_id,
+  salePrice: Number(row.sale_price),
+  costPrice: Number(row.cost_price),
+  stock: Number(row.stock),
+  imageUrl: row.image_url || null,
+  isActive: Boolean(row.is_active),
+  isDeleted: Boolean(row.is_deleted),
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
 });
 
 export class SupabaseProductRepository implements IProductRepository {
   async findAll(filters?: ProductFilters): Promise<Product[]> {
-    let sql = `
-      SELECT 
-        id, 
-        name, 
-        description, 
-        category_id as "categoryId", 
-        sale_price::float as "salePrice", 
-        cost_price::float as "costPrice", 
-        stock, 
-        image_url as "imageUrl", 
-        is_active as "isActive", 
-        is_deleted as "isDeleted", 
-        created_at as "createdAt", 
-        updated_at as "updatedAt"
-      FROM products
-      WHERE is_deleted = false
-    `;
-    const params: any[] = [];
-    let idx = 1;
+    let q = supabase
+      .from('products')
+      .select('*')
+      .eq('is_deleted', false);
 
     if (filters) {
       if (filters.isActive !== undefined) {
-        sql += ` AND is_active = $${idx++}`;
-        params.push(filters.isActive);
+        q = q.eq('is_active', filters.isActive);
       }
       if (filters.categoryId) {
-        sql += ` AND category_id = $${idx++}`;
-        params.push(filters.categoryId);
+        q = q.eq('category_id', filters.categoryId);
       }
       if (filters.search) {
-        sql += ` AND (name ILIKE $${idx} OR description ILIKE $${idx})`;
-        params.push(`%${filters.search}%`);
-        idx++;
+        q = q.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
       }
     }
 
-    sql += ` ORDER BY created_at DESC`;
+    q = q.order('created_at', { ascending: false });
 
-    // Backend SQL pagination
     if (filters?.pageSize) {
       const limit = Math.max(1, Math.min(100, filters.pageSize));
       const page = Math.max(1, filters.page || 1);
-      const offset = (page - 1) * limit;
-      sql += ` LIMIT $${idx++} OFFSET $${idx++}`;
-      params.push(limit, offset);
+      const from = (page - 1) * limit;
+      const to = from + limit - 1;
+      q = q.range(from, to);
     }
 
-    const rows = await query(sql, params);
-    return rows.map(mapProduct);
+    const { data, error } = await q;
+    if (error) {
+      console.error('Error fetching products from Supabase:', error);
+      throw error;
+    }
+
+    return (data || []).map(mapProduct);
   }
 
   async findById(id: string): Promise<Product | null> {
-    const rows = await query(
-      `SELECT 
-        id, 
-        name, 
-        description, 
-        category_id as "categoryId", 
-        sale_price::float as "salePrice", 
-        cost_price::float as "costPrice", 
-        stock, 
-        image_url as "imageUrl", 
-        is_active as "isActive", 
-        is_deleted as "isDeleted", 
-        created_at as "createdAt", 
-        updated_at as "updatedAt"
-      FROM products 
-      WHERE id = $1 AND is_deleted = false`,
-      [id]
-    );
-    return rows[0] ? mapProduct(rows[0]) : null;
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .eq('is_deleted', false)
+      .maybeSingle();
+
+    if (error || !data) return null;
+    return mapProduct(data);
   }
 
   async create(input: CreateProductInput): Promise<Product> {
     const id = `prod-${generateId()}`;
     const now = new Date().toISOString();
 
-    const rows = await query(
-      `INSERT INTO products (
-        id, name, description, category_id, sale_price, cost_price, stock, image_url, is_active, is_deleted, created_at, updated_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, false, $10, $10)
-      RETURNING 
-        id, 
-        name, 
-        description, 
-        category_id as "categoryId", 
-        sale_price::float as "salePrice", 
-        cost_price::float as "costPrice", 
-        stock, 
-        image_url as "imageUrl", 
-        is_active as "isActive", 
-        is_deleted as "isDeleted", 
-        created_at as "createdAt", 
-        updated_at as "updatedAt"`,
-      [
+    const { data, error } = await supabase
+      .from('products')
+      .insert({
         id,
-        input.name,
-        input.description,
-        input.categoryId,
-        input.salePrice,
-        input.costPrice,
-        input.stock,
-        input.imageUrl,
-        input.isActive,
-        now,
-      ]
-    );
-    return mapProduct(rows[0]);
+        name: input.name,
+        description: input.description,
+        category_id: input.categoryId,
+        sale_price: input.salePrice,
+        cost_price: input.costPrice,
+        stock: input.stock,
+        image_url: input.imageUrl || null,
+        is_active: input.isActive,
+        is_deleted: false,
+        created_at: now,
+        updated_at: now,
+      })
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Error creating product in Supabase:', error);
+      throw error;
+    }
+
+    return mapProduct(data);
   }
 
   async update(id: string, input: UpdateProductInput): Promise<Product | null> {
-    const fields: string[] = [];
-    const values: any[] = [];
-    let idx = 1;
+    const updateData: Record<string, any> = {
+      updated_at: new Date().toISOString(),
+    };
 
-    if (input.name !== undefined) {
-      fields.push(`name = $${idx++}`);
-      values.push(input.name);
-    }
-    if (input.description !== undefined) {
-      fields.push(`description = $${idx++}`);
-      values.push(input.description);
-    }
-    if (input.categoryId !== undefined) {
-      fields.push(`category_id = $${idx++}`);
-      values.push(input.categoryId);
-    }
-    if (input.salePrice !== undefined) {
-      fields.push(`sale_price = $${idx++}`);
-      values.push(input.salePrice);
-    }
-    if (input.costPrice !== undefined) {
-      fields.push(`cost_price = $${idx++}`);
-      values.push(input.costPrice);
-    }
-    if (input.stock !== undefined) {
-      fields.push(`stock = $${idx++}`);
-      values.push(input.stock);
-    }
-    if (input.imageUrl !== undefined) {
-      fields.push(`image_url = $${idx++}`);
-      values.push(input.imageUrl);
-    }
-    if (input.isActive !== undefined) {
-      fields.push(`is_active = $${idx++}`);
-      values.push(input.isActive);
-    }
+    if (input.name !== undefined) updateData.name = input.name;
+    if (input.description !== undefined) updateData.description = input.description;
+    if (input.categoryId !== undefined) updateData.category_id = input.categoryId;
+    if (input.salePrice !== undefined) updateData.sale_price = input.salePrice;
+    if (input.costPrice !== undefined) updateData.cost_price = input.costPrice;
+    if (input.stock !== undefined) updateData.stock = input.stock;
+    if (input.imageUrl !== undefined) updateData.image_url = input.imageUrl;
+    if (input.isActive !== undefined) updateData.is_active = input.isActive;
 
-    fields.push(`updated_at = $${idx++}`);
-    values.push(new Date().toISOString());
+    const { data, error } = await supabase
+      .from('products')
+      .update(updateData)
+      .eq('id', id)
+      .eq('is_deleted', false)
+      .select('*')
+      .maybeSingle();
 
-    values.push(id);
-
-    const rows = await query(
-      `UPDATE products SET ${fields.join(', ')}
-       WHERE id = $${idx} AND is_deleted = false
-       RETURNING 
-        id, 
-        name, 
-        description, 
-        category_id as "categoryId", 
-        sale_price::float as "salePrice", 
-        cost_price::float as "costPrice", 
-        stock, 
-        image_url as "imageUrl", 
-        is_active as "isActive", 
-        is_deleted as "isDeleted", 
-        created_at as "createdAt", 
-        updated_at as "updatedAt"`,
-      values
-    );
-    return rows[0] ? mapProduct(rows[0]) : null;
+    if (error || !data) return null;
+    return mapProduct(data);
   }
 
   async updateStock(id: string, delta: number): Promise<Product | null> {
-    const rows = await query(
-      `UPDATE products 
-       SET stock = GREATEST(0, stock + $1), updated_at = NOW()
-       WHERE id = $2 AND is_deleted = false
-       RETURNING 
-        id, 
-        name, 
-        description, 
-        category_id as "categoryId", 
-        sale_price::float as "salePrice", 
-        cost_price::float as "costPrice", 
-        stock, 
-        image_url as "imageUrl", 
-        is_active as "isActive", 
-        is_deleted as "isDeleted", 
-        created_at as "createdAt", 
-        updated_at as "updatedAt"`,
-      [delta, id]
-    );
-    return rows[0] ? mapProduct(rows[0]) : null;
+    const current = await this.findById(id);
+    if (!current) return null;
+
+    const newStock = Math.max(0, current.stock + delta);
+    return await this.update(id, { stock: newStock });
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const rows = await query(
-      `UPDATE products 
-       SET is_deleted = true, is_active = false, updated_at = NOW()
-       WHERE id = $1 RETURNING id`,
-      [id]
-    );
-    return rows.length > 0;
+    const { error } = await supabase
+      .from('products')
+      .update({ is_deleted: true, is_active: false, updated_at: new Date().toISOString() })
+      .eq('id', id);
+
+    return !error;
   }
 }

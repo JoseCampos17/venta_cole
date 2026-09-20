@@ -1,115 +1,96 @@
 import { IOrderRepository } from '../interfaces/IOrderRepository';
 import { Order, OrderItem, OrderWithItems, OrderStatus } from '@/types/order';
-import { query } from '@/lib/db/supabase/db';
+import { supabase } from '@/lib/db/supabase/client';
 
-const toIso = (d: any): string => (d instanceof Date ? d.toISOString() : String(d || ''));
+const mapOrderItem = (row: any): OrderItem => ({
+  id: row.id,
+  orderId: row.order_id,
+  productId: row.product_id,
+  productName: row.product_name,
+  unitPrice: Number(row.unit_price),
+  unitCost: Number(row.unit_cost || 0),
+  quantity: Number(row.quantity),
+  subtotal: Number(row.subtotal),
+});
+
+const mapOrder = (row: any, items: OrderItem[] = []): OrderWithItems => ({
+  id: row.id,
+  customerName: row.customer_name,
+  customerWhatsapp: row.customer_whatsapp,
+  customerClassroom: row.customer_classroom,
+  deliveryDate: row.delivery_date,
+  deliveryTime: row.delivery_time,
+  paymentMethod: row.payment_method,
+  status: row.status as OrderStatus,
+  totalAmount: Number(row.total_amount),
+  notes: row.notes || null,
+  createdAt: row.created_at,
+  items,
+});
 
 export class SupabaseOrderRepository implements IOrderRepository {
   async findAll(status?: OrderStatus, page?: number, pageSize?: number): Promise<OrderWithItems[]> {
-    let sql = `
-      SELECT 
-        id, 
-        created_at as "createdAt", 
-        customer_name as "customerName", 
-        customer_whatsapp as "customerWhatsapp", 
-        customer_classroom as "customerClassroom", 
-        delivery_date as "deliveryDate", 
-        delivery_time as "deliveryTime", 
-        payment_method as "paymentMethod", 
-        status, 
-        total_amount::float as "totalAmount", 
-        notes
-      FROM orders
-    `;
-    const params: any[] = [];
-    let idx = 1;
+    let q = supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
 
     if (status) {
-      sql += ` WHERE status = $${idx++}`;
-      params.push(status);
+      q = q.eq('status', status);
     }
-
-    sql += ` ORDER BY created_at DESC`;
 
     if (pageSize) {
       const limit = Math.max(1, Math.min(100, pageSize));
       const p = Math.max(1, page || 1);
-      const offset = (p - 1) * limit;
-      sql += ` LIMIT $${idx++} OFFSET $${idx++}`;
-      params.push(limit, offset);
+      const from = (p - 1) * limit;
+      const to = from + limit - 1;
+      q = q.range(from, to);
     }
 
-    const orders = await query(sql, params);
-    if (orders.length === 0) return [];
+    const { data: orders, error: ordersError } = await q;
+    if (ordersError) {
+      console.error('Error fetching orders from Supabase:', ordersError);
+      throw ordersError;
+    }
+
+    if (!orders || orders.length === 0) return [];
 
     const orderIds = orders.map(o => o.id);
-    const items = await query(
-      `SELECT 
-        id, 
-        order_id as "orderId", 
-        product_id as "productId", 
-        product_name as "productName", 
-        unit_price::float as "unitPrice", 
-        unit_cost::float as "unitCost", 
-        quantity, 
-        subtotal::float as "subtotal"
-       FROM order_items
-       WHERE order_id = ANY($1)`,
-      [orderIds]
-    );
+    const { data: items, error: itemsError } = await supabase
+      .from('order_items')
+      .select('*')
+      .in('order_id', orderIds);
 
-    const itemsByOrder = new Map<string, OrderItem[]>();
-    for (const item of items) {
-      const list = itemsByOrder.get(item.orderId) || [];
-      list.push(item);
-      itemsByOrder.set(item.orderId, list);
+    if (itemsError) {
+      console.error('Error fetching order items from Supabase:', itemsError);
+      throw itemsError;
     }
 
-    return orders.map(o => ({
-      ...o,
-      createdAt: toIso(o.createdAt),
-      items: itemsByOrder.get(o.id) || [],
-    }));
+    const itemsByOrder = new Map<string, OrderItem[]>();
+    for (const item of items || []) {
+      const list = itemsByOrder.get(item.order_id) || [];
+      list.push(mapOrderItem(item));
+      itemsByOrder.set(item.order_id, list);
+    }
+
+    return orders.map(o => mapOrder(o, itemsByOrder.get(o.id) || []));
   }
 
   async findById(id: string): Promise<OrderWithItems | null> {
-    const orders = await query(
-      `SELECT 
-        id, 
-        created_at as "createdAt", 
-        customer_name as "customerName", 
-        customer_whatsapp as "customerWhatsapp", 
-        customer_classroom as "customerClassroom", 
-        delivery_date as "deliveryDate", 
-        delivery_time as "deliveryTime", 
-        payment_method as "paymentMethod", 
-        status, 
-        total_amount::float as "totalAmount", 
-        notes
-       FROM orders WHERE id = $1`,
-      [id]
-    );
-    if (orders.length === 0) return null;
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
 
-    const items = await query(
-      `SELECT 
-        id, 
-        order_id as "orderId", 
-        product_id as "productId", 
-        product_name as "productName", 
-        unit_price::float as "unitPrice", 
-        unit_cost::float as "unitCost", 
-        quantity, 
-        subtotal::float as "subtotal"
-       FROM order_items WHERE order_id = $1`,
-      [id]
-    );
+    if (orderError || !order) return null;
 
-    return {
-      ...orders[0],
-      createdAt: toIso(orders[0].createdAt),
-      items,
-    };
+    const { data: items } = await supabase
+      .from('order_items')
+      .select('*')
+      .eq('order_id', id);
+
+    return mapOrder(order, (items || []).map(mapOrderItem));
   }
 
   async create(
@@ -118,70 +99,66 @@ export class SupabaseOrderRepository implements IOrderRepository {
   ): Promise<OrderWithItems> {
     const now = new Date().toISOString();
 
-    const orderRows = await query(
-      `INSERT INTO orders (
-        id, customer_name, customer_whatsapp, customer_classroom, delivery_date, delivery_time, payment_method, status, total_amount, notes, created_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-      RETURNING 
-        id, created_at as "createdAt", customer_name as "customerName", customer_whatsapp as "customerWhatsapp", customer_classroom as "customerClassroom", delivery_date as "deliveryDate", delivery_time as "deliveryTime", payment_method as "paymentMethod", status, total_amount::float as "totalAmount", notes`,
-      [
-        orderData.id,
-        orderData.customerName,
-        orderData.customerWhatsapp,
-        orderData.customerClassroom,
-        orderData.deliveryDate,
-        orderData.deliveryTime,
-        orderData.paymentMethod,
-        orderData.status,
-        orderData.totalAmount,
-        orderData.notes,
-        now,
-      ]
-    );
+    const { data: createdOrder, error: orderError } = await supabase
+      .from('orders')
+      .insert({
+        id: orderData.id,
+        customer_name: orderData.customerName,
+        customer_whatsapp: orderData.customerWhatsapp,
+        customer_classroom: orderData.customerClassroom,
+        delivery_date: orderData.deliveryDate,
+        delivery_time: orderData.deliveryTime,
+        payment_method: orderData.paymentMethod,
+        status: orderData.status,
+        total_amount: orderData.totalAmount,
+        notes: orderData.notes || null,
+        created_at: now,
+      })
+      .select('*')
+      .single();
 
-    const createdOrder = orderRows[0];
-    const createdItems: OrderItem[] = [];
-
-    for (const item of itemsData) {
-      const itemId = `item-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-      const itemRows = await query(
-        `INSERT INTO order_items (
-          id, order_id, product_id, product_name, unit_price, unit_cost, quantity, subtotal
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING 
-          id, order_id as "orderId", product_id as "productId", product_name as "productName", unit_price::float as "unitPrice", unit_cost::float as "unitCost", quantity, subtotal::float as "subtotal"`,
-        [
-          itemId,
-          createdOrder.id,
-          item.productId,
-          item.productName,
-          item.unitPrice,
-          item.unitCost,
-          item.quantity,
-          item.subtotal,
-        ]
-      );
-      createdItems.push(itemRows[0]);
+    if (orderError) {
+      console.error('Error inserting order in Supabase:', orderError);
+      throw orderError;
     }
 
-    return {
-      ...createdOrder,
-      createdAt: toIso(createdOrder.createdAt),
-      items: createdItems,
-    };
+    const itemsToInsert = itemsData.map(item => ({
+      id: `item-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      order_id: createdOrder.id,
+      product_id: item.productId,
+      product_name: item.productName,
+      unit_price: item.unitPrice,
+      unit_cost: item.unitCost || 0,
+      quantity: item.quantity,
+      subtotal: item.subtotal,
+    }));
+
+    let insertedItems: OrderItem[] = [];
+    if (itemsToInsert.length > 0) {
+      const { data: items, error: itemsError } = await supabase
+        .from('order_items')
+        .insert(itemsToInsert)
+        .select('*');
+
+      if (itemsError) {
+        console.error('Error inserting order items in Supabase:', itemsError);
+        throw itemsError;
+      }
+      insertedItems = (items || []).map(mapOrderItem);
+    }
+
+    return mapOrder(createdOrder, insertedItems);
   }
 
   async updateStatus(id: string, status: OrderStatus): Promise<Order | null> {
-    const rows = await query(
-      `UPDATE orders SET status = $1 WHERE id = $2
-       RETURNING 
-        id, created_at as "createdAt", customer_name as "customerName", customer_whatsapp as "customerWhatsapp", customer_classroom as "customerClassroom", delivery_date as "deliveryDate", delivery_time as "deliveryTime", payment_method as "paymentMethod", status, total_amount::float as "totalAmount", notes`,
-      [status, id]
-    );
-    if (!rows[0]) return null;
-    return {
-      ...rows[0],
-      createdAt: toIso(rows[0].createdAt),
-    };
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ status })
+      .eq('id', id)
+      .select('*')
+      .maybeSingle();
+
+    if (error || !data) return null;
+    return mapOrder(data);
   }
 }

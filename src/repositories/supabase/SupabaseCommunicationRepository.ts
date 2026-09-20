@@ -1,38 +1,34 @@
 import { ICommunicationRepository } from '../interfaces/ICommunicationRepository';
 import { Communication, CreateCommunicationInput, CommunicationStatus } from '@/types/communication';
-import { query } from '@/lib/db/supabase/db';
+import { supabase } from '@/lib/db/supabase/client';
 import { generateId } from '@/lib/utils/id-generator';
-
-const toIso = (d: any): string => (d instanceof Date ? d.toISOString() : String(d || ''));
 
 export class SupabaseCommunicationRepository implements ICommunicationRepository {
   async findAll(orderId?: string): Promise<Communication[]> {
-    let sql = `
-      SELECT 
-        id,
-        order_id as "orderId",
-        customer_name as "customerName",
-        customer_whatsapp as "customerWhatsapp",
-        type,
-        status,
-        created_at as "createdAt",
-        marked_sent_at as "markedSentAt"
-      FROM communications
-    `;
-    const params: any[] = [];
+    let q = supabase
+      .from('communications')
+      .select('*')
+      .order('created_at', { ascending: false });
 
     if (orderId) {
-      sql += ` WHERE order_id = $1`;
-      params.push(orderId);
+      q = q.eq('order_id', orderId);
     }
 
-    sql += ` ORDER BY created_at DESC`;
+    const { data, error } = await q;
+    if (error) {
+      console.error('Error fetching communications from Supabase:', error);
+      throw error;
+    }
 
-    const rows = await query(sql, params);
-    return rows.map(r => ({
-      ...r,
-      createdAt: toIso(r.createdAt),
-      markedSentAt: r.markedSentAt ? toIso(r.markedSentAt) : null,
+    return (data || []).map(r => ({
+      id: r.id,
+      orderId: r.order_id,
+      customerName: r.customer_name,
+      customerWhatsapp: r.customer_whatsapp,
+      type: r.type,
+      status: r.status,
+      createdAt: r.created_at,
+      markedSentAt: r.marked_sent_at || null,
     }));
   }
 
@@ -40,60 +36,61 @@ export class SupabaseCommunicationRepository implements ICommunicationRepository
     const id = `comm-${generateId()}`;
     const now = new Date().toISOString();
 
-    const rows = await query(
-      `INSERT INTO communications (
-        id, order_id, customer_name, customer_whatsapp, type, status, created_at, marked_sent_at
-      ) VALUES ($1, $2, $3, $4, $5, 'LINK_OPENED', $6, NULL)
-      RETURNING 
+    const { data, error } = await supabase
+      .from('communications')
+      .insert({
         id,
-        order_id as "orderId",
-        customer_name as "customerName",
-        customer_whatsapp as "customerWhatsapp",
-        type,
-        status,
-        created_at as "createdAt",
-        marked_sent_at as "markedSentAt"`,
-      [
-        id,
-        input.orderId,
-        input.customerName,
-        input.customerWhatsapp,
-        input.type,
-        now,
-      ]
-    );
+        order_id: input.orderId,
+        customer_name: input.customerName,
+        customer_whatsapp: input.customerWhatsapp,
+        type: input.type,
+        status: 'LINK_OPENED',
+        created_at: now,
+        marked_sent_at: null,
+      })
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Error creating communication in Supabase:', error);
+      throw error;
+    }
 
     return {
-      ...rows[0],
-      createdAt: toIso(rows[0].createdAt),
-      markedSentAt: rows[0].markedSentAt ? toIso(rows[0].markedSentAt) : null,
+      id: data.id,
+      orderId: data.order_id,
+      customerName: data.customer_name,
+      customerWhatsapp: data.customer_whatsapp,
+      type: data.type,
+      status: data.status,
+      createdAt: data.created_at,
+      markedSentAt: data.marked_sent_at || null,
     };
   }
 
   async updateStatus(id: string, status: CommunicationStatus): Promise<Communication | null> {
-    const markedSentAt = status === 'MARKED_SENT' ? new Date().toISOString() : null;
+    const updateData: Record<string, any> = { status };
+    if (status === 'MARKED_SENT') {
+      updateData.marked_sent_at = new Date().toISOString();
+    }
 
-    const rows = await query(
-      `UPDATE communications 
-       SET status = $1, marked_sent_at = COALESCE($2, marked_sent_at)
-       WHERE id = $3
-       RETURNING 
-        id,
-        order_id as "orderId",
-        customer_name as "customerName",
-        customer_whatsapp as "customerWhatsapp",
-        type,
-        status,
-        created_at as "createdAt",
-        marked_sent_at as "markedSentAt"`,
-      [status, markedSentAt, id]
-    );
+    const { data, error } = await supabase
+      .from('communications')
+      .update(updateData)
+      .eq('id', id)
+      .select('*')
+      .maybeSingle();
 
-    if (!rows[0]) return null;
+    if (error || !data) return null;
     return {
-      ...rows[0],
-      createdAt: toIso(rows[0].createdAt),
-      markedSentAt: rows[0].markedSentAt ? toIso(rows[0].markedSentAt) : null,
+      id: data.id,
+      orderId: data.order_id,
+      customerName: data.customer_name,
+      customerWhatsapp: data.customer_whatsapp,
+      type: data.type,
+      status: data.status,
+      createdAt: data.created_at,
+      markedSentAt: data.marked_sent_at || null,
     };
   }
 }

@@ -1,156 +1,116 @@
 import { ISaleRepository } from '../interfaces/ISaleRepository';
 import { Sale, SaleItem, SaleWithItems } from '@/types/sale';
-import { query } from '@/lib/db/supabase/db';
+import { supabase } from '@/lib/db/supabase/client';
 import { generateId } from '@/lib/utils/id-generator';
 
-const toIso = (d: any): string => (d instanceof Date ? d.toISOString() : String(d || ''));
+const mapSaleItem = (row: any): SaleItem => ({
+  id: row.id,
+  saleId: row.sale_id,
+  productId: row.product_id,
+  productName: row.product_name,
+  quantity: Number(row.quantity),
+  unitPrice: Number(row.unit_price),
+  unitCost: Number(row.unit_cost || 0),
+  subtotalRevenue: Number(row.subtotal_revenue),
+  subtotalCost: Number(row.subtotal_cost || 0),
+  subtotalProfit: Number(row.subtotal_profit || 0),
+});
+
+const mapSale = (row: any, items: SaleItem[] = []): SaleWithItems => ({
+  id: row.id,
+  orderId: row.order_id,
+  customerName: row.customer_name,
+  totalRevenue: Number(row.total_revenue),
+  totalCost: Number(row.total_cost || 0),
+  totalProfit: Number(row.total_profit || 0),
+  createdAt: row.created_at,
+  items,
+});
 
 export class SupabaseSaleRepository implements ISaleRepository {
   async findAll(from?: string, to?: string, page?: number, pageSize?: number): Promise<SaleWithItems[]> {
-    let sql = `
-      SELECT 
-        id, 
-        order_id as "orderId", 
-        created_at as "createdAt", 
-        customer_name as "customerName", 
-        total_revenue::float as "totalRevenue", 
-        total_cost::float as "totalCost", 
-        total_profit::float as "totalProfit"
-      FROM sales
-    `;
-    const params: any[] = [];
-    let idx = 1;
+    let q = supabase
+      .from('sales')
+      .select('*')
+      .order('created_at', { ascending: false });
 
     if (from && to) {
-      sql += ` WHERE created_at >= $${idx++} AND created_at <= $${idx++}`;
-      params.push(from, to);
+      q = q.gte('created_at', from).lte('created_at', to);
     } else if (from) {
-      sql += ` WHERE created_at >= $${idx++}`;
-      params.push(from);
+      q = q.gte('created_at', from);
     } else if (to) {
-      sql += ` WHERE created_at <= $${idx++}`;
-      params.push(to);
+      q = q.lte('created_at', to);
     }
-
-    sql += ` ORDER BY created_at DESC`;
 
     if (pageSize) {
       const limit = Math.max(1, Math.min(100, pageSize));
       const p = Math.max(1, page || 1);
-      const offset = (p - 1) * limit;
-      sql += ` LIMIT $${idx++} OFFSET $${idx++}`;
-      params.push(limit, offset);
+      const start = (p - 1) * limit;
+      const end = start + limit - 1;
+      q = q.range(start, end);
     }
 
-    const sales = await query(sql, params);
-    if (sales.length === 0) return [];
+    const { data: sales, error: salesError } = await q;
+    if (salesError) {
+      console.error('Error fetching sales from Supabase:', salesError);
+      throw salesError;
+    }
+
+    if (!sales || sales.length === 0) return [];
 
     const saleIds = sales.map(s => s.id);
-    const items = await query(
-      `SELECT 
-        id, 
-        sale_id as "saleId", 
-        product_id as "productId", 
-        product_name as "productName", 
-        quantity, 
-        unit_price::float as "unitPrice", 
-        unit_cost::float as "unitCost", 
-        subtotal_revenue::float as "subtotalRevenue", 
-        subtotal_cost::float as "subtotalCost", 
-        subtotal_profit::float as "subtotalProfit"
-       FROM sale_items
-       WHERE sale_id = ANY($1)`,
-      [saleIds]
-    );
+    const { data: items, error: itemsError } = await supabase
+      .from('sale_items')
+      .select('*')
+      .in('sale_id', saleIds);
 
-    const itemsBySale = new Map<string, SaleItem[]>();
-    for (const item of items) {
-      const list = itemsBySale.get(item.saleId) || [];
-      list.push(item);
-      itemsBySale.set(item.saleId, list);
+    if (itemsError) {
+      console.error('Error fetching sale items from Supabase:', itemsError);
+      throw itemsError;
     }
 
-    return sales.map(s => ({
-      ...s,
-      createdAt: toIso(s.createdAt),
-      items: itemsBySale.get(s.id) || [],
-    }));
+    const itemsBySale = new Map<string, SaleItem[]>();
+    for (const item of items || []) {
+      const list = itemsBySale.get(item.sale_id) || [];
+      list.push(mapSaleItem(item));
+      itemsBySale.set(item.sale_id, list);
+    }
+
+    return sales.map(s => mapSale(s, itemsBySale.get(s.id) || []));
   }
 
   async findById(id: string): Promise<SaleWithItems | null> {
-    const sales = await query(
-      `SELECT 
-        id, 
-        order_id as "orderId", 
-        created_at as "createdAt", 
-        customer_name as "customerName", 
-        total_revenue::float as "totalRevenue", 
-        total_cost::float as "totalCost", 
-        total_profit::float as "totalProfit"
-       FROM sales WHERE id = $1`,
-      [id]
-    );
-    if (sales.length === 0) return null;
+    const { data: sale, error: saleError } = await supabase
+      .from('sales')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
 
-    const items = await query(
-      `SELECT 
-        id, 
-        sale_id as "saleId", 
-        product_id as "productId", 
-        product_name as "productName", 
-        quantity, 
-        unit_price::float as "unitPrice", 
-        unit_cost::float as "unitCost", 
-        subtotal_revenue::float as "subtotalRevenue", 
-        subtotal_cost::float as "subtotalCost", 
-        subtotal_profit::float as "subtotalProfit"
-       FROM sale_items WHERE sale_id = $1`,
-      [id]
-    );
+    if (saleError || !sale) return null;
 
-    return {
-      ...sales[0],
-      createdAt: toIso(sales[0].createdAt),
-      items,
-    };
+    const { data: items } = await supabase
+      .from('sale_items')
+      .select('*')
+      .eq('sale_id', id);
+
+    return mapSale(sale, (items || []).map(mapSaleItem));
   }
 
   async findByOrderId(orderId: string): Promise<SaleWithItems | null> {
-    const sales = await query(
-      `SELECT 
-        id, 
-        order_id as "orderId", 
-        created_at as "createdAt", 
-        customer_name as "customerName", 
-        total_revenue::float as "totalRevenue", 
-        total_cost::float as "totalCost", 
-        total_profit::float as "totalProfit"
-       FROM sales WHERE order_id = $1`,
-      [orderId]
-    );
-    if (sales.length === 0) return null;
+    const { data: sale, error: saleError } = await supabase
+      .from('sales')
+      .select('*')
+      .eq('order_id', orderId)
+      .maybeSingle();
 
-    const items = await query(
-      `SELECT 
-        id, 
-        sale_id as "saleId", 
-        product_id as "productId", 
-        product_name as "productName", 
-        quantity, 
-        unit_price::float as "unitPrice", 
-        unit_cost::float as "unitCost", 
-        subtotal_revenue::float as "subtotalRevenue", 
-        subtotal_cost::float as "subtotalCost", 
-        subtotal_profit::float as "subtotalProfit"
-       FROM sale_items WHERE sale_id = $1`,
-      [sales[0].id]
-    );
+    if (saleError || !sale) return null;
 
-    return {
-      ...sales[0],
-      createdAt: toIso(sales[0].createdAt),
-      items,
-    };
+    const { data: items } = await supabase
+      .from('sale_items')
+      .select('*')
+      .eq('sale_id', sale.id);
+
+    return mapSale(sale, (items || []).map(mapSaleItem));
   }
 
   async create(
@@ -160,54 +120,52 @@ export class SupabaseSaleRepository implements ISaleRepository {
     const saleId = `sale-${generateId()}`;
     const now = new Date().toISOString();
 
-    const saleRows = await query(
-      `INSERT INTO sales (
-        id, order_id, customer_name, total_revenue, total_cost, total_profit, created_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING 
-        id, order_id as "orderId", created_at as "createdAt", customer_name as "customerName", total_revenue::float as "totalRevenue", total_cost::float as "totalCost", total_profit::float as "totalProfit"`,
-      [
-        saleId,
-        saleData.orderId,
-        saleData.customerName,
-        saleData.totalRevenue,
-        saleData.totalCost,
-        saleData.totalProfit,
-        now,
-      ]
-    );
+    const { data: createdSale, error: saleError } = await supabase
+      .from('sales')
+      .insert({
+        id: saleId,
+        order_id: saleData.orderId,
+        customer_name: saleData.customerName,
+        total_revenue: saleData.totalRevenue,
+        total_cost: saleData.totalCost,
+        total_profit: saleData.totalProfit,
+        created_at: now,
+      })
+      .select('*')
+      .single();
 
-    const createdSale = saleRows[0];
-    const createdItems: SaleItem[] = [];
-
-    for (const item of itemsData) {
-      const itemId = `sitem-${generateId()}`;
-      const itemRows = await query(
-        `INSERT INTO sale_items (
-          id, sale_id, product_id, product_name, quantity, unit_price, unit_cost, subtotal_revenue, subtotal_cost, subtotal_profit
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        RETURNING 
-          id, sale_id as "saleId", product_id as "productId", product_name as "productName", quantity, unit_price::float as "unitPrice", unit_cost::float as "unitCost", subtotal_revenue::float as "subtotalRevenue", subtotal_cost::float as "subtotalCost", subtotal_profit::float as "subtotalProfit"`,
-        [
-          itemId,
-          createdSale.id,
-          item.productId,
-          item.productName,
-          item.quantity,
-          item.unitPrice,
-          item.unitCost,
-          item.subtotalRevenue,
-          item.subtotalCost,
-          item.subtotalProfit,
-        ]
-      );
-      createdItems.push(itemRows[0]);
+    if (saleError) {
+      console.error('Error creating sale in Supabase:', saleError);
+      throw saleError;
     }
 
-    return {
-      ...createdSale,
-      createdAt: toIso(createdSale.createdAt),
-      items: createdItems,
-    };
+    const itemsToInsert = itemsData.map(item => ({
+      id: `sitem-${generateId()}`,
+      sale_id: createdSale.id,
+      product_id: item.productId,
+      product_name: item.productName,
+      quantity: item.quantity,
+      unit_price: item.unitPrice,
+      unit_cost: item.unitCost || 0,
+      subtotal_revenue: item.subtotalRevenue,
+      subtotal_cost: item.subtotalCost || 0,
+      subtotal_profit: item.subtotalProfit || 0,
+    }));
+
+    let insertedItems: SaleItem[] = [];
+    if (itemsToInsert.length > 0) {
+      const { data: items, error: itemsError } = await supabase
+        .from('sale_items')
+        .insert(itemsToInsert)
+        .select('*');
+
+      if (itemsError) {
+        console.error('Error inserting sale items in Supabase:', itemsError);
+        throw itemsError;
+      }
+      insertedItems = (items || []).map(mapSaleItem);
+    }
+
+    return mapSale(createdSale, insertedItems);
   }
 }

@@ -1,47 +1,43 @@
 import { IInventoryRepository } from '../interfaces/IInventoryRepository';
 import { InventoryMovement, CreateInventoryMovementInput } from '@/types/inventory';
-import { query } from '@/lib/db/supabase/db';
+import { supabase } from '@/lib/db/supabase/client';
 import { generateId } from '@/lib/utils/id-generator';
-
-const toIso = (d: any): string => (d instanceof Date ? d.toISOString() : String(d || ''));
 
 export class SupabaseInventoryRepository implements IInventoryRepository {
   async findAll(productId?: string, page?: number, pageSize?: number): Promise<InventoryMovement[]> {
-    let sql = `
-      SELECT 
-        id,
-        product_id as "productId",
-        product_name as "productName",
-        type,
-        quantity,
-        reason,
-        reference_id as "referenceId",
-        notes,
-        created_at as "createdAt"
-      FROM inventory_movements
-    `;
-    const params: any[] = [];
-    let idx = 1;
+    let q = supabase
+      .from('inventory_movements')
+      .select('*')
+      .order('created_at', { ascending: false });
 
     if (productId) {
-      sql += ` WHERE product_id = $${idx++}`;
-      params.push(productId);
+      q = q.eq('product_id', productId);
     }
-
-    sql += ` ORDER BY created_at DESC`;
 
     if (pageSize) {
       const limit = Math.max(1, Math.min(100, pageSize));
       const p = Math.max(1, page || 1);
-      const offset = (p - 1) * limit;
-      sql += ` LIMIT $${idx++} OFFSET $${idx++}`;
-      params.push(limit, offset);
+      const start = (p - 1) * limit;
+      const end = start + limit - 1;
+      q = q.range(start, end);
     }
 
-    const rows = await query(sql, params);
-    return rows.map(r => ({
-      ...r,
-      createdAt: toIso(r.createdAt),
+    const { data, error } = await q;
+    if (error) {
+      console.error('Error fetching inventory movements from Supabase:', error);
+      throw error;
+    }
+
+    return (data || []).map(r => ({
+      id: r.id,
+      productId: r.product_id,
+      productName: r.product_name,
+      type: r.type,
+      quantity: Number(r.quantity),
+      reason: r.reason,
+      referenceId: r.reference_id || null,
+      notes: r.notes || null,
+      createdAt: r.created_at,
     }));
   }
 
@@ -49,36 +45,37 @@ export class SupabaseInventoryRepository implements IInventoryRepository {
     const id = `mov-${generateId()}`;
     const now = new Date().toISOString();
 
-    const rows = await query(
-      `INSERT INTO inventory_movements (
-        id, product_id, product_name, type, quantity, reason, reference_id, notes, created_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING 
+    const { data, error } = await supabase
+      .from('inventory_movements')
+      .insert({
         id,
-        product_id as "productId",
-        product_name as "productName",
-        type,
-        quantity,
-        reason,
-        reference_id as "referenceId",
-        notes,
-        created_at as "createdAt"`,
-      [
-        id,
-        input.productId,
-        input.productName,
-        input.type,
-        input.quantity,
-        input.reason,
-        input.referenceId || null,
-        input.notes || null,
-        now,
-      ]
-    );
+        product_id: input.productId,
+        product_name: input.productName,
+        type: input.type,
+        quantity: input.quantity,
+        reason: input.reason,
+        reference_id: input.referenceId || null,
+        notes: input.notes || null,
+        created_at: now,
+      })
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Error creating inventory movement in Supabase:', error);
+      throw error;
+    }
 
     return {
-      ...rows[0],
-      createdAt: toIso(rows[0].createdAt),
+      id: data.id,
+      productId: data.product_id,
+      productName: data.product_name,
+      type: data.type,
+      quantity: Number(data.quantity),
+      reason: data.reason,
+      referenceId: data.reference_id || null,
+      notes: data.notes || null,
+      createdAt: data.created_at,
     };
   }
 }

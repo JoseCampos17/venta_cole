@@ -1,81 +1,93 @@
 import { ICategoryRepository } from '../interfaces/ICategoryRepository';
 import { Category, CreateCategoryInput } from '@/types/category';
-import { query } from '@/lib/db/supabase/db';
+import { supabase } from '@/lib/db/supabase/client';
 import { generateId } from '@/lib/utils/id-generator';
-
-const toIso = (d: any): string => (d instanceof Date ? d.toISOString() : String(d || ''));
 
 export class SupabaseCategoryRepository implements ICategoryRepository {
   async findAll(): Promise<Category[]> {
-    const rows = await query(`
-      SELECT id, name, slug, is_active as "isActive", created_at as "createdAt"
-      FROM categories
-      ORDER BY name ASC
-    `);
-    return rows.map(r => ({
-      ...r,
-      createdAt: toIso(r.createdAt),
+    const { data, error } = await supabase
+      .from('categories')
+      .select('id, name, slug, is_active, created_at')
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching categories from Supabase:', error);
+      throw error;
+    }
+
+    return (data || []).map(r => ({
+      id: r.id,
+      name: r.name,
+      slug: r.slug,
+      isActive: r.is_active,
+      createdAt: r.created_at,
     }));
   }
 
   async findById(id: string): Promise<Category | null> {
-    const rows = await query(
-      `SELECT id, name, slug, is_active as "isActive", created_at as "createdAt"
-       FROM categories WHERE id = $1`,
-      [id]
-    );
-    if (!rows[0]) return null;
+    const { data, error } = await supabase
+      .from('categories')
+      .select('id, name, slug, is_active, created_at')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error || !data) return null;
     return {
-      ...rows[0],
-      createdAt: toIso(rows[0].createdAt),
+      id: data.id,
+      name: data.name,
+      slug: data.slug,
+      isActive: data.is_active,
+      createdAt: data.created_at,
     };
   }
 
   async create(input: CreateCategoryInput): Promise<Category> {
     const id = `cat-${generateId()}`;
-    const rows = await query(
-      `INSERT INTO categories (id, name, slug, is_active)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, name, slug, is_active as "isActive", created_at as "createdAt"`,
-      [id, input.name, input.slug, input.isActive]
-    );
+    const { data, error } = await supabase
+      .from('categories')
+      .insert({
+        id,
+        name: input.name,
+        slug: input.slug,
+        is_active: input.isActive,
+      })
+      .select('id, name, slug, is_active, created_at')
+      .single();
+
+    if (error) {
+      console.error('Error creating category in Supabase:', error);
+      throw error;
+    }
+
     return {
-      ...rows[0],
-      createdAt: toIso(rows[0].createdAt),
+      id: data.id,
+      name: data.name,
+      slug: data.slug,
+      isActive: data.is_active,
+      createdAt: data.created_at,
     };
   }
 
   async update(id: string, input: Partial<CreateCategoryInput>): Promise<Category | null> {
-    const fields: string[] = [];
-    const values: any[] = [];
-    let idx = 1;
+    const updateData: Record<string, any> = {};
+    if (input.name !== undefined) updateData.name = input.name;
+    if (input.slug !== undefined) updateData.slug = input.slug;
+    if (input.isActive !== undefined) updateData.is_active = input.isActive;
 
-    if (input.name !== undefined) {
-      fields.push(`name = $${idx++}`);
-      values.push(input.name);
-    }
-    if (input.slug !== undefined) {
-      fields.push(`slug = $${idx++}`);
-      values.push(input.slug);
-    }
-    if (input.isActive !== undefined) {
-      fields.push(`is_active = $${idx++}`);
-      values.push(input.isActive);
-    }
+    const { data, error } = await supabase
+      .from('categories')
+      .update(updateData)
+      .eq('id', id)
+      .select('id, name, slug, is_active, created_at')
+      .maybeSingle();
 
-    if (fields.length === 0) return this.findById(id);
-
-    values.push(id);
-    const rows = await query(
-      `UPDATE categories SET ${fields.join(', ')}
-       WHERE id = $${idx}
-       RETURNING id, name, slug, is_active as "isActive", created_at as "createdAt"`,
-      values
-    );
-    if (!rows[0]) return null;
+    if (error || !data) return null;
     return {
-      ...rows[0],
-      createdAt: toIso(rows[0].createdAt),
+      id: data.id,
+      name: data.name,
+      slug: data.slug,
+      isActive: data.is_active,
+      createdAt: data.created_at,
     };
   }
 }

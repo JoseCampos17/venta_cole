@@ -240,7 +240,7 @@ export default function AdminProductsPage() {
             return (
               <div
                 key={product.id}
-                className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs hover:border-rose-200 transition-all flex flex-col justify-between space-y-3"
+                className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs hover:border-brand-200 transition-all flex flex-col justify-between space-y-3"
               >
                 {/* Top Info: Thumbnail + Title + Status */}
                 <div className="flex items-start gap-3">
@@ -328,14 +328,14 @@ export default function AdminProductsPage() {
                         setEditingProduct(product);
                         setIsFormOpen(true);
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
                     >
                       <Edit2 className="w-3.5 h-3.5" /> Editar
                     </button>
 
                     <button
                       onClick={() => setDeletingProductId(product.id)}
-                      className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-xl text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer"
                       title="Eliminar producto"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

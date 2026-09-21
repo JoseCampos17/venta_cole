@@ -14,13 +14,13 @@ export function CartItem({ item }: CartItemProps) {
   const { updateQuantity, removeItem } = useCart();
 
   return (
-    <div className="flex items-center gap-3.5 py-3 border-b border-pink-50 last:border-0">
+    <div className="flex items-center gap-3.5 py-3 border-b border-brand-50 last:border-0">
       {/* Product Image Thumbnail */}
-      <div className="w-16 h-16 rounded-2xl bg-pink-50 border border-pink-100 overflow-hidden flex-shrink-0 flex items-center justify-center">
+      <div className="w-16 h-16 rounded-2xl bg-brand-50 border border-brand-100 overflow-hidden flex-shrink-0 flex items-center justify-center">
         {item.productImage ? (
           <img src={item.productImage} alt={item.productName} className="w-full h-full object-cover" />
         ) : (
-          <Sparkles className="w-6 h-6 text-pink-300" />
+          <Sparkles className="w-6 h-6 text-brand-300" />
         )}
       </div>
 
@@ -33,7 +33,7 @@ export function CartItem({ item }: CartItemProps) {
 
         {/* Quantity Controls */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center border border-pink-200 rounded-xl bg-pink-50/40 p-0.5">
+          <div className="flex items-center border border-brand-200 rounded-xl bg-brand-50/40 p-0.5">
             <button
               onClick={() => updateQuantity(item.productId, item.quantity - 1)}
               className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-white text-gray-600 transition-colors"
@@ -54,7 +54,7 @@ export function CartItem({ item }: CartItemProps) {
 
           <button
             onClick={() => removeItem(item.productId)}
-            className="text-gray-400 hover:text-rose-500 p-1 transition-colors"
+            className="text-gray-400 hover:text-red-500 p-1 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>

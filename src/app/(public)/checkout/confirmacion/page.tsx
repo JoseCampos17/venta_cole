@@ -78,13 +78,13 @@ function ConfirmationContent() {
 
       {/* Live Order Tracking Button */}
       <Link href={`/pedidos/${order.id}`} className="block">
-        <div className="bg-white hover:bg-rose-50/50 border-2 border-rose-200 rounded-2xl p-4 flex items-center justify-between transition-colors shadow-xs group">
+        <div className="bg-white hover:bg-brand-50/50 border-2 border-brand-200 rounded-2xl p-4 flex items-center justify-between transition-colors shadow-xs group">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center">
               <Search className="w-5 h-5" />
             </div>
             <div>
-              <div className="font-extrabold text-slate-900 text-sm group-hover:text-rose-600">
+              <div className="font-extrabold text-slate-900 text-sm group-hover:text-brand-600">
                 Rastrear estado de mi encargo
               </div>
               <div className="text-xs text-slate-500">
@@ -92,7 +92,7 @@ function ConfirmationContent() {
               </div>
             </div>
           </div>
-          <ArrowRight className="w-5 h-5 text-rose-500 group-hover:translate-x-1 transition-transform" />
+          <ArrowRight className="w-5 h-5 text-brand-500 group-hover:translate-x-1 transition-transform" />
         </div>
       </Link>
 

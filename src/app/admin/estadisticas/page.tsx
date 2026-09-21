@@ -94,8 +94,8 @@ export default function AdminStatsPage() {
               onClick={() => setPeriod(opt.value)}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${
                 period === opt.value
-                  ? 'bg-rose-500 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-rose-600 hover:bg-slate-50'
+                  ? 'bg-brand-500 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50'
               }`}
             >
               {opt.label}
@@ -165,7 +165,7 @@ export default function AdminStatsPage() {
                     className="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 font-black flex items-center justify-center text-xs flex-shrink-0">
+                      <span className="w-6 h-6 rounded-full bg-brand-100 text-brand-700 font-black flex items-center justify-center text-xs flex-shrink-0">
                         #{idx + 1}
                       </span>
                       <div className="min-w-0">

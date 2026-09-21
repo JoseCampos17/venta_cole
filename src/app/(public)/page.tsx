@@ -73,7 +73,7 @@ export default function CatalogPage() {
   return (
     <div className="space-y-6">
       {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-pink-500 via-rose-400 to-purple-400 p-6 sm:p-8 text-white shadow-md shadow-pink-200">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-500 via-brand-400 to-gold-400 p-6 sm:p-8 text-white shadow-md shadow-brand-200">
         <div className="relative z-10 max-w-md space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-extrabold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" /> Novedades escolares
@@ -81,7 +81,7 @@ export default function CatalogPage() {
           <h2 className="text-2xl sm:text-3xl font-black leading-tight">
             ¡Haz tu encargo y recíbelo en el colegio! 🌸
           </h2>
-          <p className="text-xs sm:text-sm text-pink-100 font-medium">
+          <p className="text-xs sm:text-sm text-brand-100 font-medium">
             Cosméticos, ganchitos y accesorios. Separa tus favoritos y paga al recibir en efectivo o Nequi.
           </p>
         </div>
@@ -101,7 +101,7 @@ export default function CatalogPage() {
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           placeholder="Buscar labiales, ganchos, sombras..."
-          className="w-full pl-11 pr-4 py-3 rounded-2xl border border-pink-100 bg-white shadow-xs text-sm focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-400"
+          className="w-full pl-11 pr-4 py-3 rounded-2xl border border-brand-100 bg-white shadow-xs text-sm focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-all placeholder:text-gray-400"
         />
       </div>
 

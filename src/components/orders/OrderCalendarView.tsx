@@ -189,7 +189,7 @@ export function OrderCalendarView({
         {/* Month Header & Quick Navigation */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
               <CalendarIcon className="w-4 h-4" />
             </div>
             <div>
@@ -205,7 +205,7 @@ export function OrderCalendarView({
           <div className="flex items-center gap-1.5">
             <button
               onClick={jumpToToday}
-              className="px-2.5 py-1 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-xl text-xs font-bold text-brand-600 bg-brand-50 hover:bg-brand-100 transition-colors cursor-pointer"
             >
               Hoy
             </button>
@@ -236,7 +236,7 @@ export function OrderCalendarView({
             <div
               key={d}
               className={`text-[11px] font-black uppercase py-1 ${
-                i >= 5 ? 'text-rose-400' : 'text-slate-400'
+                i >= 5 ? 'text-brand-400' : 'text-slate-400'
               }`}
             >
               {d}
@@ -260,18 +260,18 @@ export function OrderCalendarView({
                 onClick={() => setSelectedDateKey(item.dateKey)}
                 className={`min-h-[52px] sm:min-h-[64px] rounded-2xl p-1 flex flex-col items-center justify-between transition-all relative border cursor-pointer ${
                   isSelected
-                    ? 'bg-rose-500 text-white border-rose-600 shadow-md scale-102 z-10'
+                    ? 'bg-brand-500 text-white border-brand-600 shadow-md scale-102 z-10'
                     : item.isToday
-                    ? 'bg-rose-50/70 border-rose-300 text-rose-700 font-black'
+                    ? 'bg-brand-50/70 border-brand-300 text-brand-700 font-black'
                     : item.isCurrentMonth
-                    ? 'bg-slate-50/70 hover:bg-rose-50/40 text-slate-800 border-slate-200/60'
+                    ? 'bg-slate-50/70 hover:bg-brand-50/40 text-slate-800 border-slate-200/60'
                     : 'bg-white/40 text-slate-300 border-transparent opacity-60'
                 }`}
               >
                 {/* Day Number */}
                 <span
                   className={`text-xs sm:text-sm font-extrabold ${
-                    isSelected ? 'text-white' : item.isToday ? 'text-rose-600' : ''
+                    isSelected ? 'text-white' : item.isToday ? 'text-brand-600' : ''
                   }`}
                 >
                   {item.dayNum}
@@ -284,12 +284,12 @@ export function OrderCalendarView({
                     <span
                       className={`text-[9px] font-black px-1.5 py-0.2 rounded-full leading-tight ${
                         isSelected
-                          ? 'bg-white text-rose-600'
+                          ? 'bg-white text-brand-600'
                           : hasPending
                           ? 'bg-amber-400 text-slate-950 animate-pulse'
                           : hasReady
                           ? 'bg-emerald-500 text-white'
-                          : 'bg-rose-100 text-rose-700'
+                          : 'bg-brand-100 text-brand-700'
                       }`}
                     >
                       {dayOrders.length} {dayOrders.length === 1 ? 'ped' : 'peds'}
@@ -350,7 +350,7 @@ export function OrderCalendarView({
         {/* Selected Day Header Card */}
         <div className="bg-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-brand-400 uppercase tracking-wider block">
               📅 Encargos Programados
             </span>
             <h3 className="text-base sm:text-lg font-black capitalize text-white">
@@ -363,7 +363,7 @@ export function OrderCalendarView({
               {selectedDateOrders.length} {selectedDateOrders.length === 1 ? 'encargo' : 'encargos'}
             </span>
             <span className="text-slate-400">•</span>
-            <strong className="text-sm font-black text-rose-300">
+            <strong className="text-sm font-black text-brand-300">
               {formatCurrency(selectedDateTotalRevenue)}
             </strong>
           </div>
@@ -392,7 +392,7 @@ export function OrderCalendarView({
                     <button
                       key={dKey}
                       onClick={() => setSelectedDateKey(dKey)}
-                      className="px-2.5 py-1 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 transition-colors border border-rose-200/60 cursor-pointer"
+                      className="px-2.5 py-1 rounded-xl text-xs font-bold bg-brand-50 text-brand-700 hover:bg-brand-100 transition-colors border border-brand-200/60 cursor-pointer"
                     >
                       {dKey} ({ordersByDate[dKey]?.length})
                     </button>
@@ -410,19 +410,19 @@ export function OrderCalendarView({
               return (
                 <div
                   key={order.id}
-                  className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200/90 shadow-sm space-y-4 hover:border-rose-200 transition-colors"
+                  className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200/90 shadow-sm space-y-4 hover:border-brand-200 transition-colors"
                 >
                   {/* Header row: Code, Current Status, Delivery Time */}
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
                     <div className="flex items-center gap-2.5">
-                      <span className="font-mono text-xs font-black text-rose-600 bg-rose-50 px-2.5 py-1 rounded-xl border border-rose-100">
+                      <span className="font-mono text-xs font-black text-brand-600 bg-brand-50 px-2.5 py-1 rounded-xl border border-brand-100">
                         {order.id}
                       </span>
                       <OrderStatusBadge status={order.status} />
                     </div>
 
                     <div className="flex items-center gap-1 text-xs text-slate-500 font-bold bg-slate-50 px-2.5 py-1 rounded-xl">
-                      <Clock className="w-3.5 h-3.5 text-rose-500" />
+                      <Clock className="w-3.5 h-3.5 text-brand-500" />
                       <span>{order.deliveryTime}</span>
                     </div>
                   </div>
@@ -475,9 +475,9 @@ export function OrderCalendarView({
                   </div>
 
                   {/* Status Actions */}
-                  <div className="bg-rose-50/50 rounded-2xl p-3.5 border border-rose-100 space-y-2.5">
+                  <div className="bg-brand-50/50 rounded-2xl p-3.5 border border-brand-100 space-y-2.5">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <span className="text-[11px] font-bold text-rose-800 uppercase tracking-wider">
+                      <span className="text-[11px] font-bold text-brand-800 uppercase tracking-wider">
                         Control de Estado
                       </span>
 
@@ -490,7 +490,7 @@ export function OrderCalendarView({
                           value={order.status}
                           disabled={isActing}
                           onChange={e => onStatusChange(order.id, e.target.value as OrderStatus)}
-                          className="rounded-xl border border-rose-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-800 focus:outline-none"
+                          className="rounded-xl border border-brand-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-800 focus:outline-none"
                         >
                           <option value="PENDIENTE">🟡 Pendiente</option>
                           <option value="ACEPTADO">🔵 Aceptado</option>

@@ -124,7 +124,7 @@ export default function AdminDashboardPage() {
   if (hasError && !stats) {
     return (
       <div className="max-w-md mx-auto py-12 text-center space-y-4">
-        <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto">
+        <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center mx-auto">
           <AlertTriangle className="w-6 h-6" />
         </div>
         <h2 className="text-lg font-bold text-slate-800">No se pudo cargar el resumen</h2>
@@ -208,7 +208,7 @@ export default function AdminDashboardPage() {
           </div>
           <Link
             href="/admin/pedidos"
-            className="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1"
+            className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1"
           >
             Ver todos <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -229,7 +229,7 @@ export default function AdminDashboardPage() {
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-mono text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-100">
+                    <span className="font-mono text-[10px] font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-md border border-brand-100">
                       {order.id}
                     </span>
                     <span className="text-[10px] text-slate-400">
@@ -238,7 +238,7 @@ export default function AdminDashboardPage() {
                   </div>
 
                   <div className="text-sm font-extrabold text-slate-900">
-                    {order.customerName} <span className="text-xs text-rose-600 font-bold">({order.customerClassroom})</span>
+                    {order.customerName} <span className="text-xs text-brand-600 font-bold">({order.customerClassroom})</span>
                   </div>
                   <div className="text-xs text-slate-500">
                     Entrega: <strong>{order.deliveryDate}</strong> ({order.deliveryTime})
@@ -255,7 +255,7 @@ export default function AdminDashboardPage() {
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => handleQuickStatusChange(order.id, 'RECHAZADO')}
-                      className="px-2.5 py-1.5 rounded-xl text-rose-600 hover:bg-rose-100 text-xs font-bold transition-colors"
+                      className="px-2.5 py-1.5 rounded-xl text-brand-600 hover:bg-brand-100 text-xs font-bold transition-colors"
                     >
                       Rechazar
                     </button>
@@ -300,7 +300,7 @@ export default function AdminDashboardPage() {
               {topProducts.map((p, idx) => (
                 <div key={p.productId} className="py-2.5 flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-700 font-extrabold flex items-center justify-center text-[10px] flex-shrink-0">
+                    <span className="w-5 h-5 rounded-full bg-brand-100 text-brand-700 font-extrabold flex items-center justify-center text-[10px] flex-shrink-0">
                       {idx + 1}
                     </span>
                     <span className="font-bold text-slate-800 truncate">{p.productName}</span>

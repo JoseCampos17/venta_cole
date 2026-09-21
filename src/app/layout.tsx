@@ -7,7 +7,7 @@ import { AuthProvider } from '@/features/auth/AuthContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const viewport: Viewport = {
-  themeColor: '#f43f5e',
+  themeColor: '#6B1C23',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,

@@ -80,8 +80,8 @@ export default function AdminInventoryPage() {
           title: `Se vendieron ${Math.abs(mov.quantity)} unidades 🛍️`,
           desc: mov.referenceId ? `Por el encargo ${mov.referenceId}` : 'Venta a un compañero',
           badge: 'Venta',
-          badgeColor: 'bg-rose-100 text-rose-700',
-          icon: <ShoppingBag className="w-5 h-5 text-rose-600" />,
+          badgeColor: 'bg-brand-100 text-brand-700',
+          icon: <ShoppingBag className="w-5 h-5 text-brand-600" />,
           isPositive: false,
         };
       case 'INITIAL':
@@ -137,7 +137,7 @@ export default function AdminInventoryPage() {
 
         <button
           onClick={() => loadData(false)}
-          className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-rose-600 hover:bg-slate-50 transition-colors self-start"
+          className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-brand-600 hover:bg-slate-50 transition-colors self-start"
           title="Recargar"
         >
           <RefreshCw className="w-4 h-4" />
@@ -145,8 +145,8 @@ export default function AdminInventoryPage() {
       </div>
 
       {/* Friendly Explanatory Note */}
-      <div className="bg-rose-50/70 border border-rose-100 rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-rose-900">
-        <Info className="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" />
+      <div className="bg-brand-50/70 border border-brand-100 rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-brand-900">
+        <Info className="w-4 h-4 text-brand-500 flex-shrink-0 mt-0.5" />
         <div>
           <strong>¿Cómo funciona?</strong> Cada vez que aceptas un pedido, el sistema descuenta solito el producto de tu stock y lo anota aquí para que nunca te pierdas cuántas cosas tienes.
         </div>
@@ -158,7 +158,7 @@ export default function AdminInventoryPage() {
         <select
           value={selectedProductId}
           onChange={e => setSelectedProductId(e.target.value)}
-          className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-rose-400"
+          className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-brand-400"
         >
           <option value="ALL">✨ Ver todos los productos</option>
           {products.map(p => (
@@ -186,12 +186,12 @@ export default function AdminInventoryPage() {
             return (
               <div
                 key={mov.id}
-                className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs flex items-start justify-between gap-3 hover:border-rose-200 transition-colors"
+                className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs flex items-start justify-between gap-3 hover:border-brand-200 transition-colors"
               >
                 <div className="flex items-start gap-3 min-w-0">
                   <div
                     className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                      info.isPositive ? 'bg-emerald-50' : 'bg-rose-50'
+                      info.isPositive ? 'bg-emerald-50' : 'bg-brand-50'
                     }`}
                   >
                     {info.icon}
@@ -213,7 +213,7 @@ export default function AdminInventoryPage() {
                 <div className="text-right flex-shrink-0">
                   <span
                     className={`text-base font-black ${
-                      info.isPositive ? 'text-emerald-600' : 'text-rose-600'
+                      info.isPositive ? 'text-emerald-600' : 'text-brand-600'
                     }`}
                   >
                     {info.isPositive ? `+${mov.quantity}` : `-${Math.abs(mov.quantity)}`}

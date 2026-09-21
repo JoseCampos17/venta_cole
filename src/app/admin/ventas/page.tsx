@@ -66,7 +66,7 @@ export default function AdminSalesPage() {
 
         <button
           onClick={() => loadSales(false)}
-          className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-rose-600 hover:bg-slate-50 transition-colors self-start"
+          className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-brand-600 hover:bg-slate-50 transition-colors self-start"
           title="Recargar"
         >
           <RefreshCw className="w-4 h-4" />
@@ -75,14 +75,14 @@ export default function AdminSalesPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-rose-500 rounded-2xl p-4 text-white shadow-xs">
-          <span className="text-[10px] sm:text-xs font-bold text-rose-100 uppercase tracking-wider block">
+        <div className="bg-brand-500 rounded-2xl p-4 text-white shadow-xs">
+          <span className="text-[10px] sm:text-xs font-bold text-brand-100 uppercase tracking-wider block">
             Facturado
           </span>
           <div className="text-xl sm:text-2xl font-black mt-0.5">
             {formatCurrency(totalRevenue)}
           </div>
-          <span className="text-[10px] text-rose-100 mt-0.5 block">{sales.length} ventas</span>
+          <span className="text-[10px] text-brand-100 mt-0.5 block">{sales.length} ventas</span>
         </div>
 
         <div className="bg-emerald-600 rounded-2xl p-4 text-white shadow-xs">
@@ -118,7 +118,7 @@ export default function AdminSalesPage() {
                   <span className="font-extrabold text-slate-900 text-sm block">
                     {sale.customerName}
                   </span>
-                  <span className="font-mono text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">
+                  <span className="font-mono text-[10px] font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-md">
                     {sale.orderId}
                   </span>
                 </div>

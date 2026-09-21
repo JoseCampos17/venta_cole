@@ -122,9 +122,9 @@ export function WhatsAppActions({ order }: WhatsAppActionsProps) {
                 type="button"
                 onClick={() => handleSelectTemplate('SURVEY')}
                 disabled={isLoading}
-                className="flex items-start gap-2.5 p-3 rounded-2xl border border-pink-200 bg-pink-50/40 hover:bg-pink-50 text-left transition-colors"
+                className="flex items-start gap-2.5 p-3 rounded-2xl border border-brand-200 bg-brand-50/40 hover:bg-brand-50 text-left transition-colors"
               >
-                <ClipboardCheck className="w-5 h-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                <ClipboardCheck className="w-5 h-5 text-brand-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="text-xs font-bold text-gray-900">📋 Encuesta de satisfacción</div>
                   <div className="text-[11px] text-gray-500">Preguntar qué tal le pareció el producto</div>
@@ -135,9 +135,9 @@ export function WhatsAppActions({ order }: WhatsAppActionsProps) {
                 type="button"
                 onClick={() => handleSelectTemplate('THANKS')}
                 disabled={isLoading}
-                className="flex items-start gap-2.5 p-3 rounded-2xl border border-rose-200 bg-rose-50/40 hover:bg-rose-50 text-left transition-colors"
+                className="flex items-start gap-2.5 p-3 rounded-2xl border border-brand-200 bg-brand-50/40 hover:bg-brand-50 text-left transition-colors"
               >
-                <Heart className="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5" />
+                <Heart className="w-5 h-5 text-brand-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="text-xs font-bold text-gray-900">💗 Mensaje de agradecimiento</div>
                   <div className="text-[11px] text-gray-500">Agradecerle por apoyar el emprendimiento</div>
@@ -148,9 +148,9 @@ export function WhatsAppActions({ order }: WhatsAppActionsProps) {
                 type="button"
                 onClick={() => handleSelectTemplate('NEW_PRODUCTS')}
                 disabled={isLoading}
-                className="flex items-start gap-2.5 p-3 rounded-2xl border border-purple-200 bg-purple-50/40 hover:bg-purple-50 text-left transition-colors"
+                className="flex items-start gap-2.5 p-3 rounded-2xl border border-gold-200 bg-gold-50/40 hover:bg-gold-50 text-left transition-colors"
               >
-                <Sparkles className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+                <Sparkles className="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="text-xs font-bold text-gray-900">🛍️ Avisar nuevos productos</div>
                   <div className="text-[11px] text-gray-500">Invitar a ver novedades y reposiciones</div>
@@ -231,7 +231,7 @@ export function WhatsAppActions({ order }: WhatsAppActionsProps) {
                     ) : (
                       <button
                         onClick={() => handleMarkAsSent(comm.id)}
-                        className="text-pink-600 hover:underline font-semibold"
+                        className="text-brand-600 hover:underline font-semibold"
                       >
                         Marcar enviado
                       </button>

@@ -68,12 +68,12 @@ export function AdminSidebar() {
       {/* Brand Header */}
       <div className="p-6 border-b border-slate-100">
         <Link href="/admin" className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-rose-500 flex items-center justify-center text-white font-black text-sm shadow-xs">
+          <div className="w-10 h-10 rounded-2xl bg-brand-500 flex items-center justify-center text-white font-black text-sm shadow-xs">
             VC
           </div>
           <div>
             <h1 className="font-black text-slate-900 text-base leading-tight">VentasCole</h1>
-            <span className="text-[11px] font-bold text-rose-500 uppercase tracking-wider block">
+            <span className="text-[11px] font-bold text-brand-500 uppercase tracking-wider block">
               {isSuperAdmin ? '👑 Super Admin' : 'Tu Negocio 💗'}
             </span>
           </div>
@@ -92,8 +92,8 @@ export function AdminSidebar() {
               href={item.href}
               className={`flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-bold transition-all duration-150 ${
                 isActive
-                  ? 'bg-rose-500 text-white shadow-xs'
-                  : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600'
+                  ? 'bg-brand-500 text-white shadow-xs'
+                  : 'text-slate-600 hover:bg-brand-50 hover:text-brand-600'
               }`}
             >
               <div className="flex items-center gap-3">
@@ -136,13 +136,13 @@ export function AdminSidebar() {
           target="_blank"
           className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors"
         >
-          <Store className="w-4 h-4 text-rose-500" />
+          <Store className="w-4 h-4 text-brand-500" />
           <span>Ver tienda pública</span>
         </Link>
 
         <button
           onClick={() => logout()}
-          className="w-full flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors"
+          className="w-full flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-xs font-bold text-brand-600 hover:bg-brand-50 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           <span>Cerrar sesión</span>

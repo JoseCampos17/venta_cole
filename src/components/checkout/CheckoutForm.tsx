@@ -77,13 +77,13 @@ export function CheckoutForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {serverError && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-2xl text-sm font-medium">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl text-sm font-medium">
           {serverError}
         </div>
       )}
 
       {/* Customer Info */}
-      <div className="bg-white rounded-3xl p-5 border border-pink-100 shadow-sm space-y-4">
+      <div className="bg-white rounded-3xl p-5 border border-brand-100 shadow-sm space-y-4">
         <h3 className="font-extrabold text-gray-900 text-base flex items-center gap-2">
           <span>👤</span> Tus datos personales
         </h3>
@@ -115,7 +115,7 @@ export function CheckoutForm() {
       </div>
 
       {/* Delivery details */}
-      <div className="bg-white rounded-3xl p-5 border border-pink-100 shadow-sm space-y-4">
+      <div className="bg-white rounded-3xl p-5 border border-brand-100 shadow-sm space-y-4">
         <h3 className="font-extrabold text-gray-900 text-base flex items-center gap-2">
           <span>🏫</span> Entrega en el colegio
         </h3>
@@ -123,10 +123,10 @@ export function CheckoutForm() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-pink-500" /> ¿Qué día lo quieres?
+              <Calendar className="w-4 h-4 text-brand-500" /> ¿Qué día lo quieres?
             </label>
             <select
-              className="w-full rounded-2xl border border-gray-200 px-4 py-2.5 text-sm bg-white text-gray-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-200"
+              className="w-full rounded-2xl border border-gray-200 px-4 py-2.5 text-sm bg-white text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-200"
               {...register('deliveryDate')}
             >
               <option value="Hoy en el descanso">Hoy en el descanso</option>
@@ -138,10 +138,10 @@ export function CheckoutForm() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-pink-500" /> Hora / Descanso
+              <Clock className="w-4 h-4 text-brand-500" /> Hora / Descanso
             </label>
             <select
-              className="w-full rounded-2xl border border-gray-200 px-4 py-2.5 text-sm bg-white text-gray-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-200"
+              className="w-full rounded-2xl border border-gray-200 px-4 py-2.5 text-sm bg-white text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-200"
               {...register('deliveryTime')}
             >
               <option value="Primer descanso (10:00 AM)">Primer descanso (10:00 AM)</option>
@@ -160,7 +160,7 @@ export function CheckoutForm() {
       </div>
 
       {/* Payment method selector */}
-      <div className="bg-white rounded-3xl p-5 border border-pink-100 shadow-sm space-y-3">
+      <div className="bg-white rounded-3xl p-5 border border-brand-100 shadow-sm space-y-3">
         <h3 className="font-extrabold text-gray-900 text-base">
           💳 Método de pago (al recibir)
         </h3>
@@ -171,8 +171,8 @@ export function CheckoutForm() {
             onClick={() => setValue('paymentMethod', 'cash')}
             className={`p-4 rounded-2xl border-2 text-left transition-all ${
               selectedPayment === 'cash'
-                ? 'border-pink-500 bg-pink-50/50 shadow-sm'
-                : 'border-gray-200 hover:border-pink-200'
+                ? 'border-brand-500 bg-brand-50/50 shadow-sm'
+                : 'border-gray-200 hover:border-brand-200'
             }`}
           >
             <Banknote className="w-6 h-6 text-emerald-600 mb-1.5" />
@@ -185,11 +185,11 @@ export function CheckoutForm() {
             onClick={() => setValue('paymentMethod', 'nequi')}
             className={`p-4 rounded-2xl border-2 text-left transition-all ${
               selectedPayment === 'nequi'
-                ? 'border-pink-500 bg-pink-50/50 shadow-sm'
-                : 'border-gray-200 hover:border-pink-200'
+                ? 'border-brand-500 bg-brand-50/50 shadow-sm'
+                : 'border-gray-200 hover:border-brand-200'
             }`}
           >
-            <Smartphone className="w-6 h-6 text-purple-600 mb-1.5" />
+            <Smartphone className="w-6 h-6 text-gold-500 mb-1.5" />
             <div className="font-bold text-sm text-gray-900">Nequi</div>
             <div className="text-[11px] text-gray-500">Transferencia al recibir</div>
           </button>
@@ -205,7 +205,7 @@ export function CheckoutForm() {
         variant="primary"
         size="lg"
         isLoading={isSubmitting}
-        className="w-full shadow-lg shadow-pink-200 text-base font-bold py-4"
+        className="w-full shadow-lg shadow-brand-200 text-base font-bold py-4"
       >
         <Send className="w-5 h-5 mr-1" /> Confirmar encargo ({totalItems} artículos)
       </Button>

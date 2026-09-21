@@ -29,7 +29,7 @@ export function ConfirmDialog({
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="sm">
       <div className="text-center">
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-rose-100 text-rose-600 mb-4">
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-brand-100 text-brand-600 mb-4">
           <AlertTriangle className="h-6 w-6" />
         </div>
         <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>

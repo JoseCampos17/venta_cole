@@ -16,7 +16,7 @@ export function PriceDisplay({ price, size = 'md', className = '' }: PriceDispla
   };
 
   return (
-    <span className={`text-pink-600 tracking-tight ${sizes[size]} ${className}`}>
+    <span className={`text-brand-600 tracking-tight ${sizes[size]} ${className}`}>
       {formatCurrency(price)}
     </span>
   );

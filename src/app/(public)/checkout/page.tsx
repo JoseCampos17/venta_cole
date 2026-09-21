@@ -15,7 +15,7 @@ export default function CheckoutPage() {
     return (
       <div className="max-w-lg mx-auto py-8">
         <EmptyState
-          icon={<ShoppingBag className="w-12 h-12 text-pink-300" />}
+          icon={<ShoppingBag className="w-12 h-12 text-brand-300" />}
           title="Tu carrito está vacío"
           description="Agrega algunos productos antes de realizar tu encargo."
           action={
@@ -35,7 +35,7 @@ export default function CheckoutPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/carrito"
-          className="p-2 rounded-2xl bg-white border border-pink-100 text-gray-600 hover:text-pink-600 hover:bg-pink-50 transition-colors"
+          className="p-2 rounded-2xl bg-white border border-brand-100 text-gray-600 hover:text-brand-600 hover:bg-brand-50 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>

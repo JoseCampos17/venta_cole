@@ -71,12 +71,12 @@ export function AdminHeader() {
       {/* Top Mobile Bar */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-2.5 flex items-center justify-between md:hidden shadow-xs">
         <Link href="/admin" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-xl bg-rose-500 flex items-center justify-center text-white font-black text-xs shadow-xs">
+          <div className="w-7 h-7 rounded-xl bg-brand-500 flex items-center justify-center text-white font-black text-xs shadow-xs">
             VC
           </div>
           <div>
             <span className="font-black text-slate-900 text-sm block leading-none">VentasCole</span>
-            <span className="text-[9px] text-rose-500 font-bold uppercase block mt-0.5">
+            <span className="text-[9px] text-brand-500 font-bold uppercase block mt-0.5">
               {isSuperAdmin ? '👑 Super Admin' : 'Admin'}
             </span>
           </div>
@@ -86,9 +86,9 @@ export function AdminHeader() {
           <Link
             href="/"
             target="_blank"
-            className="px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:text-rose-600 text-xs font-bold flex items-center gap-1"
+            className="px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:text-brand-600 text-xs font-bold flex items-center gap-1"
           >
-            <Store className="w-3.5 h-3.5 text-rose-500" />
+            <Store className="w-3.5 h-3.5 text-brand-500" />
             <span>Tienda</span>
           </Link>
 
@@ -129,7 +129,7 @@ export function AdminHeader() {
                   onClick={() => setIsMenuOpen(false)}
                   className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-colors ${
                     isActive
-                      ? 'bg-rose-500 text-white shadow-xs'
+                      ? 'bg-brand-500 text-white shadow-xs'
                       : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
@@ -169,7 +169,7 @@ export function AdminHeader() {
               onClick={() => setIsMenuOpen(false)}
               className="w-full flex items-center justify-center gap-2 p-3 rounded-2xl bg-slate-100 text-slate-800 font-bold text-sm"
             >
-              <Store className="w-4 h-4 text-rose-500" />
+              <Store className="w-4 h-4 text-brand-500" />
               <span>Ver tienda pública</span>
             </Link>
 
@@ -178,7 +178,7 @@ export function AdminHeader() {
                 setIsMenuOpen(false);
                 logout();
               }}
-              className="w-full flex items-center justify-center gap-2 p-3 rounded-2xl bg-rose-50 text-rose-600 font-bold text-sm"
+              className="w-full flex items-center justify-center gap-2 p-3 rounded-2xl bg-brand-50 text-brand-600 font-bold text-sm"
             >
               <LogOut className="w-4 h-4" />
               <span>Cerrar sesión</span>
@@ -193,7 +193,7 @@ export function AdminHeader() {
         <Link
           href="/admin"
           className={`flex flex-col items-center justify-center min-w-[50px] py-1 text-[10px] font-bold transition-colors ${
-            pathname === '/admin' ? 'text-rose-600' : 'text-slate-400'
+            pathname === '/admin' ? 'text-brand-600' : 'text-slate-400'
           }`}
         >
           <LayoutDashboard className="w-5 h-5 mb-0.5" />
@@ -204,13 +204,13 @@ export function AdminHeader() {
         <Link
           href="/admin/pedidos"
           className={`relative flex flex-col items-center justify-center min-w-[50px] py-1 text-[10px] font-bold transition-colors ${
-            pathname.startsWith('/admin/pedidos') ? 'text-rose-600' : 'text-slate-400'
+            pathname.startsWith('/admin/pedidos') ? 'text-brand-600' : 'text-slate-400'
           }`}
         >
           <ShoppingBag className="w-5 h-5 mb-0.5" />
           <span>Pedidos</span>
           {pendingCount > 0 && (
-            <span className="absolute top-0 right-1 w-3.5 h-3.5 rounded-full bg-rose-600 text-white text-[8px] font-black flex items-center justify-center animate-pulse">
+            <span className="absolute top-0 right-1 w-3.5 h-3.5 rounded-full bg-brand-600 text-white text-[8px] font-black flex items-center justify-center animate-pulse">
               {pendingCount}
             </span>
           )}
@@ -220,7 +220,7 @@ export function AdminHeader() {
         <Link
           href="/admin/productos"
           className={`flex flex-col items-center justify-center min-w-[50px] py-1 text-[10px] font-bold transition-colors ${
-            pathname.startsWith('/admin/productos') ? 'text-rose-600' : 'text-slate-400'
+            pathname.startsWith('/admin/productos') ? 'text-brand-600' : 'text-slate-400'
           }`}
         >
           <Package className="w-5 h-5 mb-0.5" />
@@ -231,7 +231,7 @@ export function AdminHeader() {
         <Link
           href="/admin/clientes"
           className={`flex flex-col items-center justify-center min-w-[50px] py-1 text-[10px] font-bold transition-colors ${
-            pathname.startsWith('/admin/clientes') ? 'text-rose-600' : 'text-slate-400'
+            pathname.startsWith('/admin/clientes') ? 'text-brand-600' : 'text-slate-400'
           }`}
         >
           <Users className="w-5 h-5 mb-0.5" />

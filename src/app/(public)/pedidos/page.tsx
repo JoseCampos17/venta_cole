@@ -24,7 +24,7 @@ export default function SearchOrderPage() {
   return (
     <div className="max-w-md mx-auto py-8 space-y-6">
       <div className="text-center space-y-2">
-        <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 mx-auto flex items-center justify-center">
+        <div className="w-12 h-12 rounded-2xl bg-brand-100 text-brand-600 mx-auto flex items-center justify-center">
           <Search className="w-6 h-6" />
         </div>
         <h1 className="text-2xl font-black text-slate-900">Rastrear mi Encargo</h1>

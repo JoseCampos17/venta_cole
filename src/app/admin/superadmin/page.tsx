@@ -119,7 +119,7 @@ export default function SuperAdminPage() {
       {counts && (
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs text-center space-y-1">
-            <Package className="w-5 h-5 mx-auto text-rose-500" />
+            <Package className="w-5 h-5 mx-auto text-brand-500" />
             <span className="text-xl font-black text-slate-900 block">{counts.products}</span>
             <span className="text-[11px] text-slate-500 font-bold">Productos</span>
           </div>
@@ -144,13 +144,13 @@ export default function SuperAdminPage() {
           className={`p-4 rounded-2xl flex items-center gap-3 text-xs sm:text-sm font-bold ${
             statusMessage.type === 'success'
               ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-              : 'bg-rose-50 text-rose-800 border border-rose-200'
+              : 'bg-brand-50 text-brand-800 border border-brand-200'
           }`}
         >
           {statusMessage.type === 'success' ? (
             <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
           ) : (
-            <AlertTriangle className="w-5 h-5 text-rose-600 flex-shrink-0" />
+            <AlertTriangle className="w-5 h-5 text-brand-600 flex-shrink-0" />
           )}
           <span>{statusMessage.text}</span>
         </div>
@@ -192,9 +192,9 @@ export default function SuperAdminPage() {
         </div>
 
         {/* Option 2: Full Factory Reset */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-4 hover:border-rose-300 transition-colors flex flex-col justify-between">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-4 hover:border-brand-300 transition-colors flex flex-col justify-between">
           <div className="space-y-2">
-            <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
               🗑️
             </div>
             <h3 className="text-base font-black text-slate-900">
@@ -203,7 +203,7 @@ export default function SuperAdminPage() {
             <p className="text-xs text-slate-600 leading-relaxed">
               Borra absolutamente todo: encargos, ventas, movimientos y <strong>todos los productos</strong>.
             </p>
-            <div className="bg-rose-50 p-2.5 rounded-xl border border-rose-100 text-[11px] text-rose-800 font-semibold">
+            <div className="bg-brand-50 p-2.5 rounded-xl border border-brand-100 text-[11px] text-brand-800 font-semibold">
               ⚠️ Deja la base de datos 100% en blanco para ingresar el inventario real desde cero.
             </div>
           </div>
@@ -225,9 +225,9 @@ export default function SuperAdminPage() {
         </div>
 
         {/* Option 3: Seed Demo Data */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-4 hover:border-purple-300 transition-colors flex flex-col justify-between md:col-span-2">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-4 hover:border-gold-300 transition-colors flex flex-col justify-between md:col-span-2">
           <div className="space-y-2">
-            <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-2xl bg-gold-50 text-gold-600 flex items-center justify-center font-bold">
               📦
             </div>
             <h3 className="text-base font-black text-slate-900">

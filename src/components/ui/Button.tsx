@@ -18,9 +18,9 @@ export function Button({
   const baseStyles = 'inline-flex items-center justify-center font-medium rounded-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]';
 
   const variants = {
-    primary: 'bg-gradient-to-r from-pink-500 to-rose-400 text-white hover:from-pink-600 hover:to-rose-500 focus:ring-pink-400 shadow-sm hover:shadow-md',
-    secondary: 'bg-purple-100 text-purple-700 hover:bg-purple-200 focus:ring-purple-300',
-    outline: 'border-2 border-pink-200 text-pink-700 bg-white hover:bg-pink-50 focus:ring-pink-300',
+    primary: 'bg-gradient-to-r from-brand-500 to-brand-400 text-white hover:from-brand-600 hover:to-brand-500 focus:ring-brand-400 shadow-sm hover:shadow-md',
+    secondary: 'bg-gold-100 text-gold-700 hover:bg-gold-200 focus:ring-gold-300',
+    outline: 'border-2 border-brand-200 text-brand-700 bg-white hover:bg-brand-50 focus:ring-brand-300',
     danger: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-400 shadow-sm',
     ghost: 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-300',
     success: 'bg-emerald-500 text-white hover:bg-emerald-600 focus:ring-emerald-400 shadow-sm',

@@ -107,7 +107,7 @@ export function ProductForm({
         />
 
         {imageUrl ? (
-          <div className="relative w-full aspect-video sm:aspect-[2/1] rounded-3xl overflow-hidden border-2 border-pink-200 bg-pink-50 flex items-center justify-center group shadow-sm">
+          <div className="relative w-full aspect-video sm:aspect-[2/1] rounded-3xl overflow-hidden border-2 border-brand-200 bg-brand-50 flex items-center justify-center group shadow-sm">
             <img src={imageUrl} alt="Foto producto" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
               <Button
@@ -132,16 +132,16 @@ export function ProductForm({
         ) : (
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="w-full border-2 border-dashed border-pink-300 hover:border-pink-500 bg-pink-50/40 hover:bg-pink-50/80 rounded-3xl p-6 text-center cursor-pointer transition-colors space-y-2"
+            className="w-full border-2 border-dashed border-brand-300 hover:border-brand-500 bg-brand-50/40 hover:bg-brand-50/80 rounded-3xl p-6 text-center cursor-pointer transition-colors space-y-2"
           >
             {isUploading ? (
               <div className="py-4 space-y-2">
-                <div className="w-8 h-8 border-3 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-xs font-bold text-pink-600 animate-pulse">Subiendo fotografía...</p>
+                <div className="w-8 h-8 border-3 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-xs font-bold text-brand-600 animate-pulse">Subiendo fotografía...</p>
               </div>
             ) : (
               <>
-                <div className="w-12 h-12 rounded-2xl bg-pink-100 text-pink-500 mx-auto flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-brand-100 text-brand-500 mx-auto flex items-center justify-center">
                   <UploadCloud className="w-6 h-6" />
                 </div>
                 <div>
@@ -172,11 +172,11 @@ export function ProductForm({
         <textarea
           rows={3}
           placeholder="Describe el producto, color, tamaño, etc."
-          className="w-full rounded-2xl border border-gray-200 px-4 py-2.5 text-sm bg-white text-gray-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-200"
+          className="w-full rounded-2xl border border-gray-200 px-4 py-2.5 text-sm bg-white text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-200"
           {...register('description')}
         />
         {errors.description?.message && (
-          <p className="mt-1 text-xs text-rose-600 font-medium">
+          <p className="mt-1 text-xs text-red-600 font-medium">
             {errors.description.message}
           </p>
         )}
@@ -188,7 +188,7 @@ export function ProductForm({
             Categoría
           </label>
           <select
-            className="w-full rounded-2xl border border-gray-200 px-4 py-2.5 text-sm bg-white text-gray-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-200"
+            className="w-full rounded-2xl border border-gray-200 px-4 py-2.5 text-sm bg-white text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-200"
             {...register('categoryId')}
           >
             {categories.map(c => (
@@ -198,7 +198,7 @@ export function ProductForm({
             ))}
           </select>
           {errors.categoryId?.message && (
-            <p className="mt-1 text-xs text-rose-600 font-medium">
+            <p className="mt-1 text-xs text-red-600 font-medium">
               {errors.categoryId.message}
             </p>
           )}
@@ -214,7 +214,7 @@ export function ProductForm({
       </div>
 
       {/* Pricing & Profit calculation */}
-      <div className="bg-pink-50/60 rounded-3xl p-4 border border-pink-100 space-y-3">
+      <div className="bg-brand-50/60 rounded-3xl p-4 border border-brand-100 space-y-3">
         <div className="text-xs font-bold text-gray-700 uppercase tracking-wider">
           💰 Precios y Rentabilidad
         </div>
@@ -224,7 +224,7 @@ export function ProductForm({
             label="Precio de venta al público"
             type="number"
             min={0}
-            step={500}
+            step={1}
             error={errors.salePrice?.message}
             {...register('salePrice', { valueAsNumber: true })}
           />
@@ -233,14 +233,14 @@ export function ProductForm({
             label="Costo del producto (lo que te costó)"
             type="number"
             min={0}
-            step={500}
+            step={1}
             error={errors.costPrice?.message}
             {...register('costPrice', { valueAsNumber: true })}
           />
         </div>
 
         {/* Real-time Profit & Margin display */}
-        <div className="flex items-center justify-between bg-white rounded-2xl p-3 border border-pink-100 text-xs">
+        <div className="flex items-center justify-between bg-white rounded-2xl p-3 border border-brand-100 text-xs">
           <div>
             <span className="text-gray-500">Ganancia por unidad:</span>{' '}
             <strong className="text-emerald-600 font-bold text-sm">
@@ -249,7 +249,7 @@ export function ProductForm({
           </div>
           <div>
             <span className="text-gray-500">Margen:</span>{' '}
-            <strong className="text-purple-600 font-bold text-sm">
+            <strong className="text-gold-600 font-bold text-sm">
               {formatPercentage(margin)}
             </strong>
           </div>
@@ -260,7 +260,7 @@ export function ProductForm({
         <input
           type="checkbox"
           id="isActive"
-          className="rounded text-pink-500 focus:ring-pink-400 h-4 w-4"
+          className="rounded text-brand-500 focus:ring-brand-400 h-4 w-4"
           {...register('isActive')}
         />
         <label htmlFor="isActive" className="text-sm font-semibold text-gray-800">

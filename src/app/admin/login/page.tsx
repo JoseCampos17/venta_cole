@@ -29,10 +29,10 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100">
-      <div className="w-full max-w-sm bg-white/90 backdrop-blur-md rounded-3xl p-8 border border-pink-100 shadow-xl space-y-6">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-brand-100 via-brand-50 to-gold-100">
+      <div className="w-full max-w-sm bg-white/90 backdrop-blur-md rounded-3xl p-8 border border-brand-100 shadow-xl space-y-6">
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl mx-auto flex items-center justify-center text-white shadow-md shadow-pink-200">
+          <div className="w-14 h-14 bg-gradient-to-tr from-brand-500 to-brand-400 rounded-2xl mx-auto flex items-center justify-center text-white shadow-md shadow-brand-200">
             <Sparkles className="w-7 h-7" />
           </div>
           <h2 className="text-xl font-black text-gray-900">Panel Administradora</h2>
@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
         </div>
 
         {error && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold p-3 rounded-2xl text-center">
+          <div className="bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold p-3 rounded-2xl text-center">
             {error}
           </div>
         )}
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
             variant="primary"
             size="lg"
             isLoading={isLoading}
-            className="w-full font-bold shadow-md shadow-pink-200"
+            className="w-full font-bold shadow-md shadow-brand-200"
           >
             <Lock className="w-4 h-4 mr-1.5" /> Entrar al Panel
           </Button>
@@ -70,7 +70,7 @@ export default function AdminLoginPage() {
         <div className="text-center">
           <a
             href="/"
-            className="text-xs text-pink-500 hover:text-pink-700 font-semibold transition-colors"
+            className="text-xs text-brand-500 hover:text-brand-700 font-semibold transition-colors"
           >
             ← Volver a la tienda pública
           </a>

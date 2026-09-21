@@ -67,7 +67,7 @@ export default function OrderTrackingDetailPage() {
   if (!order) {
     return (
       <div className="max-w-md mx-auto py-12 text-center space-y-4">
-        <div className="w-14 h-14 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+        <div className="w-14 h-14 bg-brand-100 text-brand-500 rounded-full flex items-center justify-center mx-auto">
           <XCircle className="w-8 h-8" />
         </div>
         <h1 className="text-xl font-black text-slate-900">Encargo no encontrado</h1>
@@ -90,7 +90,7 @@ export default function OrderTrackingDetailPage() {
       <div className="flex items-center justify-between">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-rose-600 transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-brand-600 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Volver a la tienda
         </Link>
@@ -104,12 +104,12 @@ export default function OrderTrackingDetailPage() {
       {/* Main Status Header Card */}
       <div className={`rounded-3xl p-6 text-white text-center shadow-md space-y-2 transition-all duration-300 ${
         isCancelled
-          ? 'bg-rose-600'
+          ? 'bg-brand-600'
           : order.status === 'LISTO'
           ? 'bg-emerald-600 animate-pulse'
           : order.status === 'ENTREGADO'
           ? 'bg-slate-800'
-          : 'bg-rose-500'
+          : 'bg-brand-500'
       }`}>
         <span className="text-[11px] font-bold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full inline-block">
           Código: {order.id}
@@ -150,7 +150,7 @@ export default function OrderTrackingDetailPage() {
                     isPast
                       ? 'bg-emerald-500 text-white'
                       : isCurrent
-                      ? 'bg-rose-500 text-white ring-4 ring-rose-100'
+                      ? 'bg-brand-500 text-white ring-4 ring-brand-100'
                       : 'bg-slate-100 text-slate-400 border border-slate-200'
                   }`}>
                     {isPast ? <CheckCircle2 className="w-4 h-4" /> : idx + 1}
@@ -158,9 +158,9 @@ export default function OrderTrackingDetailPage() {
 
                   <div className="flex-1">
                     <h4 className={`text-sm font-bold ${
-                      isCurrent ? 'text-rose-600' : isPast ? 'text-slate-800' : 'text-slate-400'
+                      isCurrent ? 'text-brand-600' : isPast ? 'text-slate-800' : 'text-slate-400'
                     }`}>
-                      {step.label} {isCurrent && <span className="text-[10px] bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full ml-1 font-extrabold">ACTUAL</span>}
+                      {step.label} {isCurrent && <span className="text-[10px] bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full ml-1 font-extrabold">ACTUAL</span>}
                     </h4>
                     <p className="text-xs text-slate-500">{step.description}</p>
                   </div>

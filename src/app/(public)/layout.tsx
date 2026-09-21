@@ -16,7 +16,7 @@ export default function PublicLayout({
   return (
     <div className="min-h-screen flex flex-col bg-slate-50/50 text-slate-800 antialiased">
       {/* Top Banner Notice */}
-      <div className="bg-rose-500 text-white text-[11px] sm:text-xs font-semibold py-1.5 px-4 text-center">
+      <div className="bg-brand-500 text-white text-[11px] sm:text-xs font-semibold py-1.5 px-4 text-center">
         <span>🎒 Encargos escolares directos • Pagas al recibir en efectivo o Nequi</span>
       </div>
 
@@ -25,7 +25,7 @@ export default function PublicLayout({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           {/* Brand */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-brand-400 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
               <ShoppingBag className="w-5 h-5" />
             </div>
             <div>
@@ -53,12 +53,12 @@ export default function PublicLayout({
             {/* Cart Button */}
             <Link
               href="/carrito"
-              className="relative flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-bold text-xs sm:text-sm transition-all active:scale-95 shadow-xs"
+              className="relative flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-brand-50 hover:bg-brand-100 border border-brand-200 text-brand-700 font-bold text-xs sm:text-sm transition-all active:scale-95 shadow-xs"
             >
-              <ShoppingBag className="w-4 h-4 text-rose-600" />
+              <ShoppingBag className="w-4 h-4 text-brand-600" />
               <span className="hidden sm:inline">Carrito</span>
               {totalItems > 0 && (
-                <span className="bg-rose-600 text-white text-[11px] font-extrabold px-2 py-0.5 rounded-full min-w-[20px] text-center shadow-xs">
+                <span className="bg-brand-600 text-white text-[11px] font-extrabold px-2 py-0.5 rounded-full min-w-[20px] text-center shadow-xs">
                   {totalItems}
                 </span>
               )}
@@ -81,13 +81,13 @@ export default function PublicLayout({
           <div className="flex items-center gap-4">
             <Link
               href="/pedidos"
-              className="text-slate-500 hover:text-rose-600 font-semibold transition-colors"
+              className="text-slate-500 hover:text-brand-600 font-semibold transition-colors"
             >
               Consultar un encargo
             </Link>
             <Link
               href="/admin"
-              className="flex items-center gap-1 text-slate-400 hover:text-rose-600 font-semibold transition-colors"
+              className="flex items-center gap-1 text-slate-400 hover:text-brand-600 font-semibold transition-colors"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Acceso Administradora</span>

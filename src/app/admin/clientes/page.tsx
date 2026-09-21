@@ -88,7 +88,7 @@ export default function AdminCustomersPage() {
 
         <button
           onClick={() => loadCustomers(false)}
-          className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-rose-600 hover:bg-slate-50 transition-colors self-start"
+          className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-brand-600 hover:bg-slate-50 transition-colors self-start"
           title="Recargar"
         >
           <RefreshCw className="w-4 h-4" />
@@ -103,7 +103,7 @@ export default function AdminCustomersPage() {
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           placeholder="Buscar cliente por nombre, salón o número de WhatsApp..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-xs sm:text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 placeholder:text-slate-400"
+          className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-xs sm:text-sm focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 placeholder:text-slate-400"
         />
       </div>
 
@@ -124,12 +124,12 @@ export default function AdminCustomersPage() {
             return (
               <div
                 key={customer.whatsapp || customer.name}
-                className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-3 hover:border-rose-200 transition-colors"
+                className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-3 hover:border-brand-200 transition-colors"
               >
                 {/* Top Profile Header */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-700 font-black text-sm flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-2xl bg-brand-100 text-brand-700 font-black text-sm flex items-center justify-center flex-shrink-0">
                       {customer.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">

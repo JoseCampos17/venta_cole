@@ -18,8 +18,8 @@ export function StatsCard({
   color = 'pink',
 }: StatsCardProps) {
   const colorMap = {
-    pink: 'bg-rose-50 text-rose-600 border-rose-100',
-    purple: 'bg-purple-50 text-purple-600 border-purple-100',
+    pink: 'bg-brand-50 text-brand-600 border-brand-100',
+    purple: 'bg-gold-50 text-gold-600 border-gold-100',
     green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     blue: 'bg-sky-50 text-sky-600 border-sky-100',
     yellow: 'bg-amber-50 text-amber-600 border-amber-100',

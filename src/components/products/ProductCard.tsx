@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ProductWithCategory } from '@/types/product';
 import { Button } from '@/components/ui/Button';
 import { PriceDisplay } from './PriceDisplay';
 import { StockBadge } from './StockBadge';
+import { ImagePreviewModal } from '@/components/ui/ImagePreviewModal';
 import { useCart } from '@/features/cart/CartContext';
-import { Plus, Minus, ShoppingBag, ImageIcon } from 'lucide-react';
+import { Plus, Minus, ShoppingBag, ImageIcon, ZoomIn } from 'lucide-react';
 
 interface ProductCardProps {
   product: ProductWithCategory;
@@ -14,42 +15,57 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem, updateQuantity, items } = useCart();
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const isOutOfStock = product.stock <= 0;
   const inCartItem = items.find(i => i.productId === product.id);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 hover:border-brand-200 hover:shadow-md transition-all duration-200 flex flex-col h-full overflow-hidden group">
-      {/* Product Image */}
-      <div className="relative aspect-square w-full bg-slate-100/70 overflow-hidden flex items-center justify-center">
-        {product.imageUrl ? (
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center text-slate-400 p-4 text-center">
-            <div className="w-12 h-12 rounded-xl bg-white/80 border border-slate-200 flex items-center justify-center mb-1.5 shadow-xs">
-              <ImageIcon className="w-6 h-6 text-slate-300" />
+    <>
+      <div className="bg-white rounded-2xl border border-slate-200/80 hover:border-brand-200 hover:shadow-md transition-all duration-200 flex flex-col h-full overflow-hidden group">
+        {/* Product Image Clickable */}
+        <div
+          onClick={() => product.imageUrl && setIsPreviewOpen(true)}
+          className={`relative aspect-square w-full bg-slate-100/70 overflow-hidden flex items-center justify-center ${
+            product.imageUrl ? 'cursor-zoom-in' : ''
+          }`}
+          title={product.imageUrl ? 'Toca para ver la foto en grande' : undefined}
+        >
+          {product.imageUrl ? (
+            <>
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                <span className="p-2 rounded-full bg-black/60 backdrop-blur-md text-white shadow-md">
+                  <ZoomIn className="w-4 h-4" />
+                </span>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center text-slate-400 p-4 text-center">
+              <div className="w-12 h-12 rounded-xl bg-white/80 border border-slate-200 flex items-center justify-center mb-1.5 shadow-xs">
+                <ImageIcon className="w-6 h-6 text-slate-300" />
+              </div>
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                {product.category?.name || 'Producto'}
+              </span>
             </div>
-            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-              {product.category?.name || 'Producto'}
+          )}
+
+          {/* Category Badge */}
+          <div className="absolute top-2 left-2 max-w-[calc(50%-4px)] pointer-events-none">
+            <span className="block truncate px-1.5 py-0.5 bg-white/90 backdrop-blur-md rounded-md text-[9px] sm:text-[10px] font-bold text-slate-700 shadow-xs border border-slate-200/50">
+              {product.category?.name}
             </span>
           </div>
-        )}
 
-        {/* Category Badge */}
-        <div className="absolute top-2 left-2 max-w-[calc(50%-4px)]">
-          <span className="block truncate px-1.5 py-0.5 bg-white/90 backdrop-blur-md rounded-md text-[9px] sm:text-[10px] font-bold text-slate-700 shadow-xs border border-slate-200/50">
-            {product.category?.name}
-          </span>
+          {/* Stock Badge */}
+          <div className="absolute top-2 right-2 max-w-[calc(50%-4px)] pointer-events-none">
+            <StockBadge stock={product.stock} className="truncate text-[9px] sm:text-xs" />
+          </div>
         </div>
-
-        {/* Stock Badge */}
-        <div className="absolute top-2 right-2 max-w-[calc(50%-4px)]">
-          <StockBadge stock={product.stock} className="truncate text-[9px] sm:text-xs" />
-        </div>
-      </div>
 
       {/* Product Details */}
       <div className="p-3 sm:p-4 flex flex-col flex-grow">
@@ -116,5 +132,20 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </div>
     </div>
+
+    {/* Full image preview modal */}
+    {product.imageUrl && (
+      <ImagePreviewModal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        imageUrl={product.imageUrl}
+        title={product.name}
+        subtitle={product.category?.name}
+        price={product.salePrice}
+        onAddToCart={!isOutOfStock ? () => addItem(product, 1) : undefined}
+        addToCartLabel={inCartItem ? 'Agregar otra unidad' : 'Agregar al carrito'}
+      />
+    )}
+  </>
   );
 }

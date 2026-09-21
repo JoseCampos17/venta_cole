@@ -8,8 +8,9 @@ import { Category } from '@/types/category';
 import { Product } from '@/types/product';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { ImagePreviewModal } from '@/components/ui/ImagePreviewModal';
 import { calcMargin, calcProfit, formatCurrency, formatPercentage } from '@/lib/utils/format';
-import { UploadCloud, Image as ImageIcon, Trash2, Sparkles, Camera } from 'lucide-react';
+import { UploadCloud, Image as ImageIcon, Trash2, Camera, ZoomIn } from 'lucide-react';
 
 interface ProductFormProps {
   initialData?: Product;
@@ -26,7 +27,11 @@ export function ProductForm({
 }: ProductFormProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(initialData?.imageUrl ?? null);
   const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  
+  // Dedicated refs: one for direct camera capture (Android/iOS) and one for gallery selection
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const {
     register,
@@ -79,84 +84,167 @@ export function ProductForm({
       alert('Error de conexión al subir la imagen');
     } finally {
       setIsUploading(false);
+      // Reset input values so selecting the same file again triggers change event
+      if (cameraInputRef.current) cameraInputRef.current.value = '';
+      if (galleryInputRef.current) galleryInputRef.current.value = '';
     }
   };
 
-  const handleRemoveImage = () => {
+  const handleRemoveImage = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setImageUrl(null);
     setValue('imageUrl', '');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (cameraInputRef.current) cameraInputRef.current.value = '';
+    if (galleryInputRef.current) galleryInputRef.current.value = '';
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      {/* Photo Uploader Dropzone */}
-      <div className="space-y-2">
-        <label className="block text-sm font-bold text-gray-800 flex items-center gap-1.5">
-          <span>📸</span> Fotografía del producto
-        </label>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleFileUpload}
-        />
-
-        {imageUrl ? (
-          <div className="relative w-full aspect-video sm:aspect-[2/1] rounded-3xl overflow-hidden border-2 border-brand-200 bg-brand-50 flex items-center justify-center group shadow-sm">
-            <img src={imageUrl} alt="Foto producto" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-                className="bg-white text-gray-800"
-              >
-                <Camera className="w-4 h-4 mr-1" /> Cambiar foto
-              </Button>
-              <Button
-                type="button"
-                variant="danger"
-                size="sm"
-                onClick={handleRemoveImage}
-              >
-                <Trash2 className="w-4 h-4 mr-1" /> Quitar
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            className="w-full border-2 border-dashed border-brand-300 hover:border-brand-500 bg-brand-50/40 hover:bg-brand-50/80 rounded-3xl p-6 text-center cursor-pointer transition-colors space-y-2"
-          >
-            {isUploading ? (
-              <div className="py-4 space-y-2">
-                <div className="w-8 h-8 border-3 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-xs font-bold text-brand-600 animate-pulse">Subiendo fotografía...</p>
-              </div>
-            ) : (
-              <>
-                <div className="w-12 h-12 rounded-2xl bg-brand-100 text-brand-500 mx-auto flex items-center justify-center">
-                  <UploadCloud className="w-6 h-6" />
-                </div>
-                <div>
-                  <span className="text-sm font-bold text-gray-800 block">
-                    Toca aquí para seleccionar una foto
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    Desde tu galería o archivos de tu celular / computador
-                  </span>
-                </div>
-              </>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Photo Uploader Dropzone */}
+        <div className="space-y-2">
+          <label className="block text-sm font-bold text-gray-800 flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <span>📸</span> Fotografía del producto
+            </span>
+            {imageUrl && (
+              <span className="text-xs font-normal text-brand-600">
+                Toca la foto para ampliar
+              </span>
             )}
-          </div>
-        )}
-      </div>
+          </label>
+
+          {/* Hidden Direct Camera Input (Android/iOS capture) */}
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={handleFileUpload}
+          />
+
+          {/* Hidden Gallery Input */}
+          <input
+            ref={galleryInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileUpload}
+          />
+
+          {imageUrl ? (
+            <div className="space-y-2.5">
+              {/* Image Preview Container (Clickable to open lightbox) */}
+              <div
+                onClick={() => setIsPreviewOpen(true)}
+                className="relative w-full aspect-video sm:aspect-[2/1] rounded-3xl overflow-hidden border-2 border-brand-200 bg-brand-50 flex items-center justify-center group shadow-sm cursor-zoom-in"
+                title="Toca para ver la imagen en grande"
+              >
+                <img
+                  src={imageUrl}
+                  alt="Foto producto"
+                  className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-200"
+                />
+
+                {/* Hover / Tap Zoom Badge */}
+                <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity shadow-md">
+                  <ZoomIn className="w-3.5 h-3.5" /> Ampliar
+                </div>
+
+                {/* Quick overlay actions on hover */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsPreviewOpen(true);
+                    }}
+                    className="bg-white/95 text-slate-800 shadow-md text-xs"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5 mr-1 text-brand-600" /> Ver grande
+                  </Button>
+                </div>
+              </div>
+
+              {/* Action Buttons Below Photo */}
+              <div className="grid grid-cols-3 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => cameraInputRef.current?.click()}
+                  className="text-xs font-bold py-2 border-brand-200 text-brand-700 hover:bg-brand-50"
+                >
+                  <Camera className="w-3.5 h-3.5 mr-1" /> Tomar foto
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => galleryInputRef.current?.click()}
+                  className="text-xs font-bold py-2 border-brand-200 text-brand-700 hover:bg-brand-50"
+                >
+                  <ImageIcon className="w-3.5 h-3.5 mr-1" /> Galería
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="danger"
+                  size="sm"
+                  onClick={handleRemoveImage}
+                  className="text-xs font-bold py-2"
+                >
+                  <Trash2 className="w-3.5 h-3.5 mr-1" /> Quitar
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full border-2 border-dashed border-brand-300 bg-brand-50/40 rounded-3xl p-5 text-center transition-colors space-y-3">
+              {isUploading ? (
+                <div className="py-4 space-y-2">
+                  <div className="w-8 h-8 border-3 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                  <p className="text-xs font-bold text-brand-600 animate-pulse">Subiendo fotografía...</p>
+                </div>
+              ) : (
+                <>
+                  <div className="w-12 h-12 rounded-2xl bg-brand-100 text-brand-600 mx-auto flex items-center justify-center shadow-xs">
+                    <UploadCloud className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-sm font-bold text-slate-800 block">
+                      Agrega la foto del producto
+                    </span>
+                    <span className="text-xs text-slate-500">
+                      Toma una foto en vivo o elígela de tu galería
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => cameraInputRef.current?.click()}
+                      className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
+                    >
+                      <Camera className="w-4 h-4" /> Tomar Foto (Cámara)
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => galleryInputRef.current?.click()}
+                      className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white hover:bg-brand-50 border border-brand-200 text-brand-800 font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
+                    >
+                      <ImageIcon className="w-4 h-4 text-brand-600" /> Elegir de Galería
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
       <Input
         label="Nombre del producto"
@@ -282,5 +370,17 @@ export function ProductForm({
         </Button>
       </div>
     </form>
+
+    {/* Lightbox photo preview */}
+    {imageUrl && (
+      <ImagePreviewModal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        imageUrl={imageUrl}
+        title={watch('name') || 'Foto del producto'}
+        subtitle="Previsualización de fotografía"
+      />
+    )}
+  </>
   );
 }

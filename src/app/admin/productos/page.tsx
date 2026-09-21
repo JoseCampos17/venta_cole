@@ -11,6 +11,7 @@ import { Modal } from '@/components/ui/Modal';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { ImagePreviewModal } from '@/components/ui/ImagePreviewModal';
 import { formatCurrency } from '@/lib/utils/format';
 import {
   Plus,
@@ -20,6 +21,7 @@ import {
   Check,
   X,
   ImageIcon,
+  ZoomIn,
 } from 'lucide-react';
 import { ProductFormValues } from '@/lib/validation/product.schema';
 
@@ -32,6 +34,9 @@ export default function AdminProductsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Preview photo state
+  const [previewProduct, setPreviewProduct] = useState<ProductWithCategory | null>(null);
 
   // Delete confirm state
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
@@ -244,9 +249,20 @@ export default function AdminProductsPage() {
               >
                 {/* Top Info: Thumbnail + Title + Status */}
                 <div className="flex items-start gap-3">
-                  <div className="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <div
+                    onClick={() => product.imageUrl && setPreviewProduct(product)}
+                    className={`w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0 overflow-hidden relative group/thumb ${
+                      product.imageUrl ? 'cursor-zoom-in hover:border-brand-400' : ''
+                    }`}
+                    title={product.imageUrl ? 'Toca para ampliar fotografía' : undefined}
+                  >
                     {product.imageUrl ? (
-                      <img src={product.imageUrl} alt="" className="w-full h-full object-cover" />
+                      <>
+                        <img src={product.imageUrl} alt="" className="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform" />
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center">
+                          <ZoomIn className="w-3.5 h-3.5 text-white" />
+                        </div>
+                      </>
                     ) : (
                       <ImageIcon className="w-6 h-6 text-slate-300" />
                     )}
@@ -376,6 +392,18 @@ export default function AdminProductsPage() {
         confirmText="Sí, eliminar"
         variant="danger"
       />
+
+      {/* Full image preview modal */}
+      {previewProduct?.imageUrl && (
+        <ImagePreviewModal
+          isOpen={Boolean(previewProduct)}
+          onClose={() => setPreviewProduct(null)}
+          imageUrl={previewProduct.imageUrl}
+          title={previewProduct.name}
+          subtitle={`${previewProduct.category?.name} • Stock: ${previewProduct.stock} uds`}
+          price={previewProduct.salePrice}
+        />
+      )}
     </div>
   );
 }

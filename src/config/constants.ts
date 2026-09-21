@@ -1,5 +1,5 @@
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? 'VentasCole';
-export const APP_TAGLINE = process.env.NEXT_PUBLIC_APP_TAGLINE ?? 'Accesorios y cosméticos 💗';
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? 'Style Velaris';
+export const APP_TAGLINE = process.env.NEXT_PUBLIC_APP_TAGLINE ?? 'Cosméticos y Accesorios ✨';
 
 export const LOW_STOCK_THRESHOLD = 3;
 

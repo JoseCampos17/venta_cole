@@ -224,7 +224,8 @@ export function ProductForm({
             label="Precio de venta al público"
             type="number"
             min={0}
-            step={1}
+            step="any"
+            placeholder="Ej: 1250 o 5000"
             error={errors.salePrice?.message}
             {...register('salePrice', { valueAsNumber: true })}
           />
@@ -233,7 +234,8 @@ export function ProductForm({
             label="Costo del producto (lo que te costó)"
             type="number"
             min={0}
-            step={1}
+            step="any"
+            placeholder="Ej: 800 o 3500"
             error={errors.costPrice?.message}
             {...register('costPrice', { valueAsNumber: true })}
           />

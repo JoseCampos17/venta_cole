@@ -61,48 +61,56 @@ export function ProductCard({ product }: ProductCardProps) {
         </p>
 
         {/* Price & Cart Controls */}
-        <div className="mt-auto pt-2 border-t border-slate-100 flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
-          <div>
-            <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block leading-none mb-0.5">Precio</span>
-            <PriceDisplay price={product.salePrice} size="md" />
+        <div className="mt-auto pt-2.5 border-t border-slate-100 flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-slate-400">Precio</span>
+            <PriceDisplay price={product.salePrice} size="md" className="font-extrabold" />
           </div>
 
           {isOutOfStock ? (
-            <span className="text-xs font-bold text-slate-400 px-3 py-1.5 bg-slate-100 rounded-xl text-center">
+            <span className="w-full text-xs font-bold text-slate-400 py-2 bg-slate-100 rounded-xl text-center">
               Agotado
             </span>
           ) : inCartItem ? (
             /* Direct Stepper to add / decrease / remove directly on the card! */
-            <div className="flex items-center justify-center gap-1 bg-brand-50 border border-brand-200 rounded-xl p-0.5 w-full sm:w-auto">
+            <div className="flex items-center justify-between bg-brand-50 border border-brand-200/80 rounded-xl p-1 w-full shadow-xs">
               <button
+                type="button"
                 onClick={() => updateQuantity(product.id, inCartItem.quantity - 1)}
-                className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg bg-white text-brand-700 hover:bg-brand-100 font-bold shadow-xs active:scale-95 transition-all"
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white text-brand-700 hover:bg-brand-100 font-bold shadow-xs active:scale-95 transition-all"
                 title="Quitar 1 unidad"
               >
-                <Minus className="w-3.5 h-3.5" />
+                <Minus className="w-4 h-4" />
               </button>
 
-              <span className="w-8 sm:w-6 text-center font-black text-sm sm:text-xs text-brand-700">
-                {inCartItem.quantity}
-              </span>
+              <div className="flex flex-col items-center">
+                <span className="font-black text-sm text-brand-800 leading-tight">
+                  {inCartItem.quantity}
+                </span>
+                <span className="text-[9px] text-brand-600 font-semibold leading-none">
+                  en carrito
+                </span>
+              </div>
 
               <button
+                type="button"
                 onClick={() => updateQuantity(product.id, inCartItem.quantity + 1)}
                 disabled={inCartItem.quantity >= product.stock}
-                className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg bg-brand-500 text-white hover:bg-brand-600 font-bold shadow-xs active:scale-95 transition-all disabled:opacity-40"
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white hover:bg-brand-600 font-bold shadow-xs active:scale-95 transition-all disabled:opacity-40"
                 title="Agregar 1 unidad más"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-4 h-4" />
               </button>
             </div>
           ) : (
             <Button
+              type="button"
               variant="primary"
               size="sm"
               onClick={() => addItem(product, 1)}
-              className="font-bold text-xs px-3 py-2 rounded-xl shadow-xs w-full sm:w-auto"
+              className="w-full font-bold text-xs py-2.5 rounded-xl shadow-xs flex items-center justify-center gap-1.5"
             >
-              <Plus className="w-3.5 h-3.5 mr-1" /> Agregar
+              <Plus className="w-4 h-4" /> Agregar al carrito
             </Button>
           )}
         </div>

@@ -2,13 +2,13 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'VentasCole - Tienda y Encargos',
-    short_name: 'VentasCole',
-    description: 'Catálogo y sistema de encargos escolares de cosméticos y accesorios.',
+    name: 'Style Velaris - Tienda y Encargos',
+    short_name: 'Style Velaris',
+    description: 'Catálogo y sistema de encargos de cosméticos y accesorios Style Velaris.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
-    theme_color: '#f43f5e',
+    theme_color: '#6B1C23',
     icons: [
       {
         src: '/icon-192.png',

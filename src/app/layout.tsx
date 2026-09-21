@@ -29,8 +29,8 @@ const getBaseUrl = (): string => {
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseUrl()),
-  title: 'VentasCole 💗 | Catálogo y Encargos Escolares',
-  description: '¡Haz tu encargo fácil y rápido! Cosméticos, labiales, ganchitos mariposa y accesorios escolares. Pagas al recibir en el colegio en efectivo o Nequi ✨',
+  title: 'Style Velaris ✨ | Cosméticos y Accesorios',
+  description: '¡Haz tu encargo fácil y rápido! Cosméticos, labiales, accesorios y belleza Style Velaris. Pagas al recibir en efectivo o Nequi ✨',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: [
@@ -46,29 +46,29 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'es_CO',
     url: '/',
-    siteName: 'VentasCole',
-    title: 'VentasCole 💗 | Catálogo y Encargos Escolares',
-    description: '¡Haz tu encargo fácil y rápido! Cosméticos, labiales, ganchitos mariposa y accesorios. Pagas al recibir en el colegio en efectivo o Nequi ✨',
+    siteName: 'Style Velaris',
+    title: 'Style Velaris ✨ | Cosméticos y Accesorios',
+    description: '¡Haz tu encargo fácil y rápido! Cosméticos, labiales, accesorios y belleza. Pagas al recibir en efectivo o Nequi ✨',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
         type: 'image/jpeg',
-        alt: 'VentasCole - Encargos Escolares de Cosméticos y Accesorios',
+        alt: 'Style Velaris - Cosméticos y Accesorios',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'VentasCole 💗 | Catálogo y Encargos Escolares',
-    description: '¡Haz tu encargo fácil y rápido! Cosméticos, labiales, ganchitos y accesorios. Pagas al recibir en efectivo o Nequi ✨',
+    title: 'Style Velaris ✨ | Cosméticos y Accesorios',
+    description: '¡Haz tu encargo fácil y rápido! Cosméticos, labiales y accesorios. Pagas al recibir en efectivo o Nequi ✨',
     images: ['/og-image.jpg'],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'VentasCole',
+    title: 'Style Velaris',
   },
   formatDetection: {
     telephone: false,
@@ -86,12 +86,12 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="VentasCole" />
+        <meta name="apple-mobile-web-app-title" content="Style Velaris" />
         <link rel="icon" href="/icon-192.png" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         {/* WhatsApp & Social Open Graph Link Preview Tags */}
-        <meta property="og:title" content="VentasCole 💗 | Catálogo y Encargos Escolares" />
-        <meta property="og:description" content="¡Haz tu encargo fácil y rápido! Cosméticos, labiales, ganchitos mariposa y accesorios. Pagas al recibir en el colegio en efectivo o Nequi ✨" />
+        <meta property="og:title" content="Style Velaris ✨ | Cosméticos y Accesorios" />
+        <meta property="og:description" content="¡Haz tu encargo fácil y rápido! Cosméticos, labiales, accesorios y belleza. Pagas al recibir en efectivo o Nequi ✨" />
         <meta property="og:image" content="/og-image.jpg" />
         <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:width" content="1200" />

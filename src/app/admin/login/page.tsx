@@ -32,11 +32,13 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-brand-100 via-brand-50 to-gold-100">
       <div className="w-full max-w-sm bg-white/90 backdrop-blur-md rounded-3xl p-8 border border-brand-100 shadow-xl space-y-6">
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 bg-gradient-to-tr from-brand-500 to-brand-400 rounded-2xl mx-auto flex items-center justify-center text-white shadow-md shadow-brand-200">
-            <Sparkles className="w-7 h-7" />
-          </div>
-          <h2 className="text-xl font-black text-gray-900">Panel Administradora</h2>
-          <p className="text-xs text-gray-500">Ingresa tu contraseña para administrar tus ventas</p>
+          <img
+            src="/logo.png"
+            alt="Style Velaris"
+            className="w-16 h-16 rounded-full object-cover mx-auto shadow-md ring-2 ring-gold-400 bg-white"
+          />
+          <h2 className="text-xl font-black text-gray-900">Style Velaris</h2>
+          <p className="text-xs text-gray-500">Panel de Administración • Ingresa tu contraseña</p>
         </div>
 
         {error && (

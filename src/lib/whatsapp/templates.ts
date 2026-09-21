@@ -8,7 +8,7 @@ export interface WhatsAppTemplateData {
 
 export function getWhatsAppMessage(type: CommunicationType, data: WhatsAppTemplateData): string {
   const name = data.customerName.trim();
-  const app = data.appName ?? 'VentasCole';
+  const app = data.appName ?? 'Style Velaris';
 
   switch (type) {
     case 'SURVEY':

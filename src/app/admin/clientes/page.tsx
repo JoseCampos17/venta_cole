@@ -71,7 +71,7 @@ export default function AdminCustomersPage() {
   });
 
   const handleOpenWhatsApp = (customer: CustomerSummary) => {
-    const msg = `¡Hola ${customer.name}! 😊 Te escribo de VentasCole 💗`;
+    const msg = `¡Hola ${customer.name}! 😊 Te escribo de Style Velaris ✨`;
     const link = createWhatsAppLink(customer.whatsapp, msg);
     window.open(link, '_blank');
   };

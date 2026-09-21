@@ -87,8 +87,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Style Velaris" />
-        <link rel="icon" href="/icon-192.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/logo.png" type="image/png" />
+        <link rel="shortcut icon" href="/logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/logo.png" />
         {/* WhatsApp & Social Open Graph Link Preview Tags */}
         <meta property="og:title" content="Style Velaris ✨ | Cosméticos y Accesorios" />
         <meta property="og:description" content="¡Haz tu encargo fácil y rápido! Cosméticos, labiales, accesorios y belleza. Pagas al recibir en efectivo o Nequi ✨" />

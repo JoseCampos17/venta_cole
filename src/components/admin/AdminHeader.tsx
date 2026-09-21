@@ -70,13 +70,15 @@ export function AdminHeader() {
     <>
       {/* Top Mobile Bar */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-2.5 flex items-center justify-between md:hidden shadow-xs">
-        <Link href="/admin" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-xl bg-brand-500 flex items-center justify-center text-white font-black text-xs shadow-xs">
-            VC
-          </div>
+        <Link href="/admin" className="flex items-center gap-2.5">
+          <img
+            src="/logo.png"
+            alt="Style Velaris"
+            className="w-8 h-8 rounded-full object-cover shadow-xs ring-1 ring-gold-400 bg-white"
+          />
           <div>
-            <span className="font-black text-slate-900 text-sm block leading-none">VentasCole</span>
-            <span className="text-[9px] text-brand-500 font-bold uppercase block mt-0.5">
+            <span className="font-black text-slate-900 text-sm block leading-none">Style Velaris</span>
+            <span className="text-[9px] text-brand-600 font-bold uppercase block mt-0.5">
               {isSuperAdmin ? '👑 Super Admin' : 'Admin'}
             </span>
           </div>

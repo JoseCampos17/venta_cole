@@ -67,14 +67,16 @@ export function AdminSidebar() {
     <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
       {/* Brand Header */}
       <div className="p-6 border-b border-slate-100">
-        <Link href="/admin" className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-brand-500 flex items-center justify-center text-white font-black text-sm shadow-xs">
-            VC
-          </div>
+        <Link href="/admin" className="flex items-center gap-3">
+          <img
+            src="/logo.png"
+            alt="Style Velaris"
+            className="w-11 h-11 rounded-full object-cover shadow-sm ring-2 ring-gold-400 bg-white"
+          />
           <div>
-            <h1 className="font-black text-slate-900 text-base leading-tight">VentasCole</h1>
-            <span className="text-[11px] font-bold text-brand-500 uppercase tracking-wider block">
-              {isSuperAdmin ? '👑 Super Admin' : 'Tu Negocio 💗'}
+            <h1 className="font-black text-slate-900 text-base leading-tight">Style Velaris</h1>
+            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider block">
+              {isSuperAdmin ? '👑 Super Admin' : 'Administración ✨'}
             </span>
           </div>
         </Link>

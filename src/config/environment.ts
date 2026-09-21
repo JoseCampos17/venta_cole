@@ -11,8 +11,8 @@ export const env = {
   adminPasswordHash: process.env.ADMIN_PASSWORD_HASH ?? '',
   superAdminPasswordHash: process.env.SUPER_ADMIN_PASSWORD_HASH ?? '',
   jwtSecret: process.env.JWT_SECRET ?? 'dev-secret-change-in-production',
-  appName: process.env.NEXT_PUBLIC_APP_NAME ?? 'VentasCole',
-  appTagline: process.env.NEXT_PUBLIC_APP_TAGLINE ?? 'Accesorios y cosméticos 💗',
+  appName: process.env.NEXT_PUBLIC_APP_NAME ?? 'Style Velaris',
+  appTagline: process.env.NEXT_PUBLIC_APP_TAGLINE ?? 'Accessories, Makeup & Skincare ✨',
   supabase: {
     url: process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
     anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
